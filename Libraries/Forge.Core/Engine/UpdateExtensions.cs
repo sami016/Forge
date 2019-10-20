@@ -14,7 +14,16 @@ namespace Forge.Core.Engine
         /// Applies an update at the end of this tick.
         /// </summary>
         /// <param name="updateAction"></param>
-        public static void Apply(this Entity entity, Action updateAction)
+        public static void Update(this EntityManager entityManager, Action updateAction)
+        {
+            entityManager.UpdateContext.Enqueue(0, updateAction);
+        }
+
+        /// <summary>
+        /// Applies an update at the end of this tick.
+        /// </summary>
+        /// <param name="updateAction"></param>
+        public static void Update(this Entity entity, Action updateAction)
         {
             entity.EntityManager.UpdateContext.Enqueue(entity.ThreadContextNumber, updateAction);
         }
@@ -23,7 +32,7 @@ namespace Forge.Core.Engine
         /// Applies an update at the end of this tick.
         /// </summary>
         /// <param name="updateAction"></param>
-        public static void Apply(this IComponent component, Action updateAction)
+        public static void Update(this IComponent component, Action updateAction)
         {
             var entity = component.Entity;
             entity.EntityManager.UpdateContext.Enqueue(entity.ThreadContextNumber, updateAction);

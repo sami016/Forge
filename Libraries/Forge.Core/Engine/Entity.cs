@@ -56,11 +56,10 @@ namespace Forge.Core.Engine
         {
             var entity = new Entity(this, EntityManager);
 
-            _children.Add(entity.Id, entity);
-            //this.Update(() =>
-            //{
-            //    _children.Add(entity.Id, entity);
-            //});
+            EntityManager.Update(() =>
+            {
+                _children.Add(entity.Id, entity);
+            });
 
             return entity;
         }
