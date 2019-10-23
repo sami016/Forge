@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Forge.Core.Scenes;
 
 namespace Forge.Core.Engine
 {
@@ -10,6 +11,7 @@ namespace Forge.Core.Engine
         public EntityManager EntityManager { get; }
         public GameLoop GameLoop { get; }
         public ExecutePool ExecutePool { get; }
+        public SceneManager SceneManager { get; }
 
         public IList<GameLoopPhase> Phases { get; set; }
 
@@ -19,6 +21,7 @@ namespace Forge.Core.Engine
             EntityManager = new EntityManager(new ParallelCollection<Entity>(threadCount, ushort.MaxValue), SideEffectManager);
             GameLoop = new GameLoop(EntityManager, SideEffectManager);
             ExecutePool = new ExecutePool(threadCount, GameLoop);
+            SceneManager = new SceneManager();
 
             Phases = new List<GameLoopPhase>()
             {

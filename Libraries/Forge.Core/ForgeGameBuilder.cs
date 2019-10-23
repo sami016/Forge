@@ -1,5 +1,6 @@
 ﻿using Forge.Core.Components;
 using Forge.Core.Engine;
+using Forge.Core.Scenes;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
@@ -12,6 +13,7 @@ namespace Forge.Core
         private IServiceCollection _serviceProvider;
         private IList<Type> _indexInterfaces = new List<Type>();
         private IList<(Type type, Func<IComponent> factory)> _singletonCreators = new List<(Type, Func<IComponent>)>();
+        private Func<Scene> _initialSceneFactory = () => null;
 
         public ForgeGameBuilder()
         {
@@ -37,6 +39,13 @@ namespace Forge.Core
             }
         }
 
+        public ForgeGameBuilder WithInitialScene(Func<Scene> sceneFactory)
+        {
+            _initialSceneFactory = sceneFactory;
+
+            return this;
+        }
+
         public ForgeGameBuilder UseServiceContainer()
         {
             return this;
@@ -45,6 +54,7 @@ namespace Forge.Core
         public ForgeGame Create()
         {
             var engine = new ForgeEngine(Environment.ProcessorCount);
+            engine.SceneManager.SetScene(_initialSceneFactory());
             return new ForgeGame(engine);
         }
     }

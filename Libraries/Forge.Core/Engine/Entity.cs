@@ -1,11 +1,14 @@
-﻿using System;
+﻿using Forge.Core.Components;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Forge.Core.Engine
 {
     public class Entity
     {
+        private readonly IList<IComponent> _components = new List<IComponent>();
         private readonly IDictionary<uint, Entity> _children;
 
         /// <summary>
@@ -82,6 +85,48 @@ namespace Forge.Core.Engine
         public void Delete()
         {
             EntityManager.Despawn(Id);
+        }
+
+        public void Add<T>(T component)
+            where T : IComponent
+        {
+            if (!_components.Contains(component))
+            {
+                _components.Add(component);
+            }
+        }
+
+        public void Remove<T>(T component)
+            where T : IComponent
+        {
+            if (_components.Contains(component))
+            {
+                _components.Remove(component);
+            }
+        }
+
+        public T Get<T>()
+            where T : IComponent
+        {
+            var type = typeof(T);
+            foreach (var component in _components)
+            {
+                if (type.IsAssignableFrom(component.GetType()))
+                {
+                    return (T)component;
+                }
+            }
+            return default(T);
+        }
+
+
+        public IEnumerable<T> GetAll<T>()
+            where T : IComponent
+        {
+            var type = typeof(T);
+            return _components
+                .Where(x => type.IsAssignableFrom(x.GetType()))
+                .Cast<T>();
         }
     }
 }

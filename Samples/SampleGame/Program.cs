@@ -9,6 +9,7 @@ namespace SampleGame
         static ForgeGame Game => new ForgeGameBuilder()
                 .UseEnginePrimitives()
                 .UseGlassUI()
+                .WithInitialScene(() => new MenuScene())
                 .Create();
 
         [STAThread]
