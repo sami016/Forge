@@ -1,5 +1,6 @@
 ﻿using Forge.Core.Interfaces;
 using Forge.Core.Resources;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -15,6 +16,7 @@ namespace Forge.Core
             builder.IndexInterface<ITick>();
 
             builder.AddSingleton<ResourceManager<SpriteFont>>(() => new ResourceManager<SpriteFont>());
+            builder.AddSingleton<ResourceManager<Color>>(() => new ResourceManager<Color>());
 
             return builder;
         }

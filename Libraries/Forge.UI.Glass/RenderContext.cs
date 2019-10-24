@@ -12,12 +12,14 @@ namespace Forge.UI.Glass
         public SpriteBatch SpriteBatch { get; }
         public GameTime GameTime { get; }
         public ResourceManager<SpriteFont> Fonts { get; }
+        public ResourceManager<Color> Colours { get; }
 
-        public RenderContext(SpriteBatch spriteBatch, GameTime gameTime, ResourceManager<SpriteFont> fonts)
+        public RenderContext(SpriteBatch spriteBatch, GameTime gameTime, ResourceManager<SpriteFont> fonts, ResourceManager<Color> colours)
         {
             SpriteBatch = spriteBatch;
             GameTime = gameTime;
             Fonts = fonts;
+            Colours = colours;
         }
     }
 }

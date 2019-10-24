@@ -1,5 +1,6 @@
 ﻿using Forge.Core.Components;
 using Forge.Core.Engine;
+using Forge.Core.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
@@ -7,15 +8,13 @@ using System.Text;
 
 namespace Forge.Core.Scenes
 {
-    public class Scene : IDisposable
+    public abstract class Scene : IDisposable, IInit
     {
         public IDictionary<Type, Entity> _singletonEntities = new Dictionary<Type, Entity>();
 
         [Inject] public EntityManager EntityManager { get; set; }
 
-        public Scene()
-        {
-        }
+        public abstract void Initialise();
 
         public T AddSingleton<T>(T singleton)
             where T : IComponent

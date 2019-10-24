@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Forge.Core.Components;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -10,6 +11,8 @@ namespace Forge.Core.Engine
     public class EntityManager
     {
         private uint _autoGenCounter = 1;
+        private ComponentIndexer _componentIndexer;
+
         public IServiceProvider ServiceProvider { get; }
         //private readonly ComponentInjector _injector;
         public SideEffectManager UpdateContext { get; set; }
@@ -24,6 +27,7 @@ namespace Forge.Core.Engine
             Pools = pools;
             UpdateContext = updateContext;
 
+            _componentIndexer = new ComponentIndexer();
             Pools.ItemAdded += ItemAdded;
             //ServiceContainer = new ServiceContainer();
             //ServiceContainer.Add(this);
@@ -34,6 +38,9 @@ namespace Forge.Core.Engine
         {
             var entity = new Entity(this);
             entity.Id = Pools.Add(entity);
+            // On the next time step, add component for indexing.
+            // Useless indexing now, since it doesn't have components added until after this returns.
+            this.Update(() => _componentIndexer.Index(entity));
             return entity;
         }
 
@@ -60,9 +67,17 @@ namespace Forge.Core.Engine
             entity.Id = Pools.Add(entity);
         }
 
+        public IEnumerable<T> GetAll<T>()
+        {
+            //TODO
+            return new T[0];
+        }
+
         internal void Despawned(Entity entity)
         {
             Pools.Remove(entity.Id);
+            // Remove all indexes for this entity immediately. We don't want this showing up when searching.
+            _componentIndexer.Unindex(entity);
         }
 
         public Entity[] GetShardSet(int shardNumber)

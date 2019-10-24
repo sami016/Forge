@@ -54,6 +54,13 @@ namespace Forge.Core
         public ForgeGame Create()
         {
             var engine = new ForgeEngine(Environment.ProcessorCount);
+            foreach (var entry in _singletonCreators)
+            {
+                var entity = engine.EntityManager.Create();
+                var component = entry.factory();
+                entity.Add(component);
+                engine.ServiceContainer.AddService(entry.type, component);
+            }
             engine.SceneManager.SetScene(_initialSceneFactory());
             return new ForgeGame(engine);
         }

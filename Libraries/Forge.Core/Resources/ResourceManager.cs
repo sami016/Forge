@@ -8,7 +8,6 @@ using System.Text;
 namespace Forge.Core.Resources
 {
     public class ResourceManager<T> : Component
-        where T : class
     {
         public IDictionary<string, T> _loaded;
 
@@ -38,7 +37,7 @@ namespace Forge.Core.Resources
 
         public void Unload(T value)
         {
-            var entry = _loaded.Where(x => x.Value == value);
+            var entry = _loaded.Where(x => x.Value.Equals(value));
             if (entry.Any())
             {
                 var first = entry.First();

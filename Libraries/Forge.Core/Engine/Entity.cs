@@ -11,6 +11,8 @@ namespace Forge.Core.Engine
         private readonly IList<IComponent> _components = new List<IComponent>();
         private readonly IDictionary<uint, Entity> _children;
 
+        public IEnumerable<IComponent> Components => _components;
+
         /// <summary>
         /// The unit's unique identifier.
         /// </summary>

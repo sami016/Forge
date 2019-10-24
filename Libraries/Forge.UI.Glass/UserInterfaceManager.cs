@@ -7,16 +7,17 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Forge.UI.Glass.Layout
+namespace Forge.UI.Glass
 {
     public class UserInterfaceManager : Component
     {
-        private readonly IList<ITemplate> _templates;
+        private readonly IList<ITemplate> _templates = new List<ITemplate>();
 
         public IEnumerable<ITemplate> Templates => _templates;
         public int ActiveTemplateCount => _templates.Count;
 
         [Inject] public ResourceManager<SpriteFont> Fonts { get; set; }
+        [Inject] public ResourceManager<Color> Colours { get; set; }
 
         public void Create(ITemplate template)
         {
@@ -37,7 +38,8 @@ namespace Forge.UI.Glass.Layout
                     (
                         spriteBatch,
                         gameTime,
-                        Fonts
+                        Fonts,
+                        Colours
                     )
                 );
             }

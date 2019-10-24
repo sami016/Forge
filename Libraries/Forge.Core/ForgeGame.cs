@@ -25,5 +25,11 @@ namespace Forge.Core
             base.Update(gameTime);
             _engine.Tick();
         }
+
+        protected override void Draw(GameTime gameTime)
+        {
+            base.Draw(gameTime);
+            _engine.Draw(gameTime);
+        }
     }
 }
