@@ -69,6 +69,19 @@ namespace Forge.Core.Engine
             return entity;
         }
 
+        public bool Has<T>() where T : IComponent
+        {
+            var type = typeof(T);
+            foreach (var component in _components)
+            {
+                if (type.IsAssignableFrom(component.GetType()))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
         /// <summary>
         /// Creates a child entity using a template.
         /// </summary>
@@ -92,6 +105,7 @@ namespace Forge.Core.Engine
         public void Add<T>(T component)
             where T : IComponent
         {
+            EntityManager.InitialiseComponent(component);
             if (!_components.Contains(component))
             {
                 _components.Add(component);

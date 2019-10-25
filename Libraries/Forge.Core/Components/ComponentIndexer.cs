@@ -53,5 +53,15 @@ namespace Forge.Core.Components
                 }
             }
         }
+
+        public IEnumerable<Entity> GetAll<T>()
+        {
+            var type = typeof(T);
+            if (_indexes.ContainsKey(type))
+            {
+                return _indexes[type];
+            }
+            return null;
+        }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Forge.Core.Interfaces;
+using Forge.Core.Rendering;
 using Forge.Core.Resources;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -14,9 +15,11 @@ namespace Forge.Core
         {
             // Index all components that tick for speed.
             builder.IndexInterface<ITick>();
+            builder.IndexInterface<IRenderable>();
 
             builder.AddSingleton<ResourceManager<SpriteFont>>(() => new ResourceManager<SpriteFont>());
             builder.AddSingleton<ResourceManager<Color>>(() => new ResourceManager<Color>());
+
 
             return builder;
         }

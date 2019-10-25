@@ -1,6 +1,8 @@
 ﻿using Forge.Core.Components;
+using Forge.Core.Utilities;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Forge.Core.Engine
@@ -22,16 +24,14 @@ namespace Forge.Core.Engine
 
         public Entity Get(uint id) => Pools.Get(id);
 
-        public EntityManager(ParallelCollection<Entity> pools, SideEffectManager updateContext)
+        public EntityManager(ParallelCollection<Entity> pools, SideEffectManager updateContext, IServiceProvider serviceProvider)
         {
             Pools = pools;
             UpdateContext = updateContext;
-
+            ServiceProvider = serviceProvider;
+            
             _componentIndexer = new ComponentIndexer();
             Pools.ItemAdded += ItemAdded;
-            //ServiceContainer = new ServiceContainer();
-            //ServiceContainer.Add(this);
-            //_injector = new ComponentInjector(ServiceContainer);
         }
 
         public Entity Create()
@@ -68,9 +68,17 @@ namespace Forge.Core.Engine
         }
 
         public IEnumerable<T> GetAll<T>()
+            where T : IComponent
         {
-            //TODO
-            return new T[0];
+            var entities = _componentIndexer.GetAll<T>();
+            if (entities == null)
+            {
+                // Unindexed search.
+                entities = Pools.Entities
+                    .Where(x => x != null && x.Has<T>());
+            }
+            return entities
+                .Select(x => x.Get<T>());
         }
 
         internal void Despawned(Entity entity)
@@ -93,6 +101,11 @@ namespace Forge.Core.Engine
         private void ItemAdded(Entity entity, int shardIndex)
         {
             entity.ThreadContextNumber = shardIndex;
+        }
+
+        public void InitialiseComponent(IComponent component)
+        {
+            ServiceProvider.Inject(component);
         }
     }
 }

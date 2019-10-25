@@ -1,4 +1,5 @@
 ﻿using Forge.Core.Components;
+using Forge.Core.Rendering;
 using Forge.Core.Resources;
 using Forge.UI.Glass.Templates;
 using Microsoft.Xna.Framework;
@@ -9,7 +10,7 @@ using System.Text;
 
 namespace Forge.UI.Glass
 {
-    public class UserInterfaceManager : Component
+    public class UserInterfaceManager : Component, IRenderable
     {
         private readonly IList<ITemplate> _templates = new List<ITemplate>();
 
@@ -26,9 +27,8 @@ namespace Forge.UI.Glass
             _templates.Add(template);
         }
 
-        public void Render()
+        public void Render(GameTime gameTime)
         {
-            GameTime gameTime = null;
             SpriteBatch spriteBatch = null;
             //TODO use engine renderable interface.
             foreach (var element in _templates)

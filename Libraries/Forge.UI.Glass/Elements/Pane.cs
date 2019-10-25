@@ -30,7 +30,7 @@ namespace Forge.UI.Glass.Elements
                 case null:
                     break;
                 case ColourBackgroundStyling colourBackground:
-                    var colour = string.IsNullOrEmpty(colourBackground.ColourResource) 
+                    var colour = !string.IsNullOrEmpty(colourBackground.ColourResource) 
                         ? context.Colours.Get(colourBackground.ColourResource) 
                         : colourBackground.Colour;
                     colour = colour ?? colourBackground.Colour ?? Color.Purple;

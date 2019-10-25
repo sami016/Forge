@@ -23,7 +23,7 @@ namespace Forge.Core.Engine
         public ForgeEngine(int threadCount)
         {
             SideEffectManager = new SideEffectManager(threadCount);
-            EntityManager = new EntityManager(new ParallelCollection<Entity>(threadCount, ushort.MaxValue), SideEffectManager);
+            EntityManager = new EntityManager(new ParallelCollection<Entity>(threadCount, ushort.MaxValue), SideEffectManager, ServiceContainer);
             GameLoop = new GameLoop(EntityManager, SideEffectManager);
             ExecutePool = new ExecutePool(threadCount, GameLoop);
             SceneManager = new SceneManager(ServiceContainer);
