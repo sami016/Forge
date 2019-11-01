@@ -10,6 +10,7 @@ using System.Text;
 
 namespace Forge.UI.Glass
 {
+    public delegate void UIDispose();
     public class UserInterfaceManager : Component, IRenderable
     {
         private readonly IList<ITemplate> _templates = new List<ITemplate>();
@@ -22,12 +23,17 @@ namespace Forge.UI.Glass
         [Inject]  public ResourceManager<Texture2D> Textures { get; set; }
         [Inject] public RenderResources RenderPrimitives { get; set; }
 
-        public void Create(ITemplate template)
+        public UIDispose Create(ITemplate template)
         {
             template.Initialise();
             template.Reevaluate();
             _templates.Add(template);
             template.Initialise();
+
+            return () =>
+            {
+                _templates.Remove(template);
+            };
         }
 
         public void Render(RenderContext context)

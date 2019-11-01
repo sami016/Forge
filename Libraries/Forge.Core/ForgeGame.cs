@@ -34,6 +34,7 @@ namespace Forge.Core
 
         protected override void Draw(GameTime gameTime)
         {
+            GraphicsDevice.Clear(Color.SlateBlue);
             base.Draw(gameTime);
             _engine.Draw(gameTime);
         }

@@ -1,4 +1,5 @@
-﻿using Forge.UI.Glass.Elements;
+﻿using Forge.Core.Scenes;
+using Forge.UI.Glass.Elements;
 using Forge.UI.Glass.Interaction;
 using Forge.UI.Glass.Stylings;
 using Forge.UI.Glass.Templates;
@@ -13,10 +14,12 @@ namespace SampleGame.Templates
     public class SplashTemplate : Template
     {
         private readonly string _message;
+        private readonly SceneManager _sceneManager;
 
-        public SplashTemplate(string message)
+        public SplashTemplate(string message, Forge.Core.Scenes.SceneManager sceneManager)
         {
             _message = message;
+            _sceneManager = sceneManager;
         }
 
         public override IElement Evaluate()
@@ -71,6 +74,7 @@ namespace SampleGame.Templates
         private void RocketClicked(ClickUIEvent @event)
         {
             Debug.WriteLine("Rocket clicked");
+            _sceneManager.SetScene(new OtherScene());
         }
     }
 }
