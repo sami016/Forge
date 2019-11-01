@@ -13,6 +13,14 @@ namespace Forge.Core.Components
         private IList<Type> _indexTypes = new List<Type>();
         private IDictionary<Type, IList<Entity>> _indexes = new Dictionary<Type, IList<Entity>>();
 
+        public ComponentIndexer(IList<Type> indexTypes)
+        {
+            foreach (var type in indexTypes)
+            {
+                AddIndex(type);
+            }
+        }
+
         public void AddIndex(Type type)
         {
             if (!_indexes.ContainsKey(type))

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using Forge.UI.Glass.Elements;
+using Forge.UI.Glass.Interaction;
 using Microsoft.Xna.Framework;
 
 namespace Forge.UI.Glass.Templates
@@ -9,14 +10,31 @@ namespace Forge.UI.Glass.Templates
     public abstract class Template : ITemplate
     {
         public IElement Current { get; set; }
+        public Rectangle Position { 
+            get => Current.Position; 
+            set
+            {
+                Current.Position = value;
+            }
+        }
 
         public IList<IElement> Children => Current.Children;
+
+        public UIEvents Events => Current.Events;
+
+        public Action<IElement> Init { 
+            get => Current.Init;
+            set
+            {
+                Current.Init = value;
+            }
+        }
 
         public Template()
         {
         }
 
-        public virtual void Initialise()
+        public virtual void PreEvaluate()
         {
         }
 
@@ -45,6 +63,8 @@ namespace Forge.UI.Glass.Templates
             Current = null;
         }
 
-        public void Render(RenderContext context) => Current?.Render(context);
+        public void Render(UIRenderContext context) => Current?.Render(context);
+
+        public void Initialise() => Current?.Initialise();
     }
 }

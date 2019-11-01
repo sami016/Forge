@@ -1,37 +1,39 @@
-﻿using System;
+﻿using Forge.Core.Components;
+using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 
 namespace Forge.Core.Engine
 {
-    public class ParallelCollection<T>
+    public class EntityPool
     {
         /// <summary>
         /// Raised whenever an item is added, including information about the shard it is added to.
         /// </summary>
-        public event Action<T, int> ItemAdded;
+        public event Action<Entity, int> ItemAdded;
 
-        private readonly Pool[] _shards;
+        private readonly EntityPoolShard[] _shards;
         private readonly uint _blockSize;
 
-        public ParallelCollection() : this(Environment.ProcessorCount, ushort.MaxValue)
+        public EntityPool(IList<Type> indexTypes) : this(Environment.ProcessorCount, ushort.MaxValue, indexTypes)
         {
         }
 
-        public ParallelCollection(int shardCount, uint capacity)
+        public EntityPool(int shardCount, uint capacity, IList<Type> indexTypes)
         {
-            _shards = new Pool[shardCount];
+            _shards = new EntityPoolShard[shardCount];
             _blockSize = (uint)(capacity / shardCount);
             for (var i = 0; i < shardCount; i++)
             {
                 var startIndex = (uint)(i * _blockSize);
-                var pool = new Pool((uint)_blockSize, (uint)startIndex);
+                var pool = new EntityPoolShard((uint)i, (uint)_blockSize, (uint)startIndex, indexTypes);
                 _shards[i] = pool;
             }
         }
 
-        public uint Add(T item)
+        public uint Add(Entity item)
         {
             // Selects the current smallest shard.
             var smallest = _shards[0].Size;
@@ -49,6 +51,7 @@ namespace Forge.Core.Engine
             var pool = _shards[smallestIndex];
             var id = pool.Add(item);
             ItemAdded?.Invoke(item, smallestIndex);
+
             return id;
         }
 
@@ -58,13 +61,13 @@ namespace Forge.Core.Engine
             _shards[sectionIndex].Release(id);
         }
 
-        public T Get(uint id)
+        public Entity Get(uint id)
         {
             var sectionIndex = (id / _blockSize);
             return _shards[sectionIndex].Get(id);
         }
 
-        public T[][] Sets
+        public Entity[][] Sets
         {
             get
             {
@@ -74,7 +77,9 @@ namespace Forge.Core.Engine
             }
         }
 
-        public IEnumerable<T> Entities
+        public EntityPoolShard[] Shards => _shards;
+
+        public IEnumerable<Entity> Entities
         {
             get
             {
@@ -83,24 +88,29 @@ namespace Forge.Core.Engine
             }
         }
 
-        private class Pool
+        public class EntityPoolShard
         {
             private object _lock = new object();
+            private readonly ComponentIndexer _componentIndexer;
 
-            public Pool(uint capacity, uint startIndex)
+            public EntityPoolShard(uint index, uint capacity, uint startIndex, IList<Type> indexTypes)
             {
+                _index = index;
                 Capacity = capacity;
                 StartIndex = startIndex;
                 EndIndex = startIndex + capacity;
                 Size = 0;
-                Entries = new T[capacity];
+                Entries = new Entity[capacity];
+                _componentIndexer = new ComponentIndexer(indexTypes);
                 HeadPointer = 0;
             }
 
             // Existing entries.
-            public T[] Entries;
+            public Entity[] Entries;
             // Number of items in the pool record.
             public uint Size;
+            private readonly uint _index;
+
             // Total capacity of the pool.
             public uint Capacity;
             // Inclusive lower bound.
@@ -128,7 +138,7 @@ namespace Forge.Core.Engine
                 HeadPointer %= Capacity;
             }
 
-            public uint Add(T item)
+            public uint Add(Entity item)
             {
                 lock (_lock)
                 {
@@ -136,24 +146,57 @@ namespace Forge.Core.Engine
                     Entries[freeLocal] = item;
                     AdvanceHead();
                     Size++;
+
+                    // Index components.
+                    item.Update(() =>
+                    {
+                        if (item.Components.Any())
+                        {
+                            var first = item.Components.First();
+                            var componentName = first.GetType().Name;
+                            Debug.WriteLine($"[{_index}] Added singleton {componentName} - id {item.Id}");
+                        } else
+                        {
+                            Debug.WriteLine($"[{_index}] Added entity - id {item.Id}");
+                        }
+                        _componentIndexer.Index(item);
+                    });
+
                     return freeLocal + StartIndex;
                 }
             }
 
             public void Release(uint id)
             {
+                Entity deletedEntity = null;
                 lock (_lock)
                 {
                     var localId = id - StartIndex;
-                    Entries[localId] = default(T);
+                    deletedEntity = Entries[localId];
+                    Entries[localId] = default(Entity);
                     Size--;
                 }
+                _componentIndexer.Unindex(deletedEntity);
             }
 
-            public T Get(uint id)
+            public Entity Get(uint id)
             {
                 var localId = id - StartIndex;
                 return Entries[localId];
+            }
+
+            public IEnumerable<T> GetAll<T>()
+                where T : IComponent
+            {
+                var entities = _componentIndexer.GetAll<T>();
+                if (entities == null)
+                {
+                    // Unindexed search.
+                    entities = Entries
+                        .Where(x => x != null && x.Has<T>());
+                }
+                return entities
+                    .Select(x => x.Get<T>());
             }
         }
     }

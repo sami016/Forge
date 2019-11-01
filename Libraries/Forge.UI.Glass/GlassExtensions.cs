@@ -12,6 +12,7 @@ namespace Forge.UI.Glass
         {
             gameBuilder.IndexInterface<IElement>();
             gameBuilder.AddSingleton(() => new UserInterfaceManager());
+            gameBuilder.AddSingleton(() => new MouseCapability());
 
             return gameBuilder;
         }

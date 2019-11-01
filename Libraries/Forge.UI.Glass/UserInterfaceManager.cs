@@ -14,32 +14,37 @@ namespace Forge.UI.Glass
     {
         private readonly IList<ITemplate> _templates = new List<ITemplate>();
 
-        public IEnumerable<ITemplate> Templates => _templates;
+        public IEnumerable<ITemplate> TemplateLayers => _templates;
         public int ActiveTemplateCount => _templates.Count;
 
         [Inject] public ResourceManager<SpriteFont> Fonts { get; set; }
         [Inject] public ResourceManager<Color> Colours { get; set; }
+        [Inject]  public ResourceManager<Texture2D> Textures { get; set; }
+        [Inject] public RenderResources RenderPrimitives { get; set; }
 
         public void Create(ITemplate template)
         {
             template.Initialise();
             template.Reevaluate();
             _templates.Add(template);
+            template.Initialise();
         }
 
-        public void Render(GameTime gameTime)
+        public void Render(RenderContext context)
         {
-            SpriteBatch spriteBatch = null;
             //TODO use engine renderable interface.
             foreach (var element in _templates)
             {
                 element.Render(
-                    new RenderContext
+                    new UIRenderContext
                     (
-                        spriteBatch,
-                        gameTime,
+                        context.SpriteBatch,
+                        context.GameTime,
                         Fonts,
-                        Colours
+                        Colours,
+                        Textures,
+                        RenderPrimitives,
+                        context.GraphicsDevice.Viewport.Bounds
                     )
                 );
             }

@@ -8,6 +8,6 @@ namespace Forge.Core.Rendering
 {
     public interface IRenderable : IComponent
     {
-        void Render(GameTime gameTime);
+        void Render(RenderContext context);
     }
 }

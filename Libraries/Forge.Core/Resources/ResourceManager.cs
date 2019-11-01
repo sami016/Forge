@@ -9,7 +9,7 @@ namespace Forge.Core.Resources
 {
     public class ResourceManager<T> : Component
     {
-        public IDictionary<string, T> _loaded;
+        public IDictionary<string, T> _loaded = new Dictionary<string, T>();
 
         public T Get(string key)
         {

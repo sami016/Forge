@@ -23,17 +23,14 @@ namespace Forge.Core.Engine
 
         public void Execute(int threadNumber)
         {
-            var entities = _entityManager.GetShardSet(threadNumber);
+            var poolShard = _entityManager.Pools.Shards[threadNumber];
 
             if (Phase == GameLoopPhase.Tick)
             {
-                foreach (var entity in entities)
+                foreach (var tick in poolShard.GetAll<ITick>())
                 {
-                    if (entity is ITick tickEntity)
-                    {
-                        // To do context.
-                        tickEntity.Tick(null);
-                    }
+                    // To do context.
+                    tick.Tick(null);
                 }
             } 
             else if (Phase == GameLoopPhase.Update)

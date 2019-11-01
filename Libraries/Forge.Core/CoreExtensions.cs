@@ -19,6 +19,8 @@ namespace Forge.Core
 
             builder.AddSingleton<ResourceManager<SpriteFont>>(() => new ResourceManager<SpriteFont>());
             builder.AddSingleton<ResourceManager<Color>>(() => new ResourceManager<Color>());
+            builder.AddSingleton<ResourceManager<Texture2D>>(() => new ResourceManager<Texture2D>());
+            builder.AddSingleton<RenderResources>(() => new RenderResources());
 
 
             return builder;

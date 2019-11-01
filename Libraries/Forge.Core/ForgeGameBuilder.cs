@@ -4,6 +4,7 @@ using Forge.Core.Scenes;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Forge.Core
@@ -53,15 +54,18 @@ namespace Forge.Core
 
         public ForgeGame Create()
         {
-            var engine = new ForgeEngine(Environment.ProcessorCount);
-            foreach (var entry in _singletonCreators)
+            var engine = new ForgeEngine(Environment.ProcessorCount, _indexInterfaces);
+            engine.Initialised += () =>
             {
-                var entity = engine.EntityManager.Create();
-                var component = entry.factory();
-                entity.Add(component);
-                engine.ServiceContainer.AddService(entry.type, component);
-            }
-            engine.SceneManager.SetScene(_initialSceneFactory());
+                foreach (var entry in _singletonCreators)
+                {
+                    var entity = engine.EntityManager.Create();
+                    var component = entry.factory();
+                    entity.Add(component);
+                    engine.ServiceContainer.AddService(entry.type, component);
+                }
+                engine.SceneManager.SetScene(_initialSceneFactory());
+            };
             return new ForgeGame(engine);
         }
     }

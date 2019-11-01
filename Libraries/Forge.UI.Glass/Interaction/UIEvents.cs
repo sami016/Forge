@@ -1,0 +1,35 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace Forge.UI.Glass.Interaction
+{
+    /// <summary>
+    /// Responsible for maintaining event subscriptions within a component.
+    /// </summary>
+    public class UIEvents
+    {
+        private readonly Dictionary<Type, object> _handlers = new Dictionary<Type, object>();
+
+        public void Subscribe<TEvent>(Action<TEvent> handler)
+        {
+            _handlers[typeof(TEvent)] = handler;
+        }
+
+        public void Unsubscribe<TEvent>()
+        {
+            _handlers.Remove(typeof(TEvent));
+        }
+
+        public bool Handles<TEvent>()
+        {
+            return _handlers.ContainsKey(typeof(TEvent));
+        }
+
+        public void Handle<TEvent>(TEvent eventObject)
+        {
+            var action = _handlers[typeof(TEvent)] as Action<TEvent>;
+            action?.Invoke(eventObject);
+        }
+    }
+}

@@ -13,18 +13,17 @@ namespace Forge.UI.Glass.Elements
     public class Pane : Primitive
     {
         public IBackgroundStyling Background { get; set; }
-        public Rectangle Position { get; set; }
 
         public Pane(params IElement[] children) : base(children)
         {
         }
 
-        public override void Render(RenderContext context)
+        public override void Render(UIRenderContext context)
         {
             //
             var spriteBatch = context.SpriteBatch;
 
-            var screenPosition = Position;
+            var screenPosition = context.RenderPort;
             switch (Background)
             {
                 case null:
@@ -36,10 +35,10 @@ namespace Forge.UI.Glass.Elements
                     colour = colour ?? colourBackground.Colour ?? Color.Purple;
                     spriteBatch.Begin();
                     spriteBatch.Draw(
-                        null,
+                        context.RenderPrimitives.WhiteTexture,
                         screenPosition,
                         null,
-                        Color.White,
+                        colour.Value,
                         0,
                         Vector2.Zero,
                         SpriteEffects.None,
@@ -48,13 +47,31 @@ namespace Forge.UI.Glass.Elements
                     spriteBatch.End();
                     break;
                 case ImageBackgroundStyling imageBackground:
+                    var texture = !string.IsNullOrEmpty(imageBackground.ImageResource)
+                        ? context.Textures.Get(imageBackground.ImageResource)
+                        : imageBackground.Image;
+                    if (texture != null)
+                    {
+                        spriteBatch.Begin();
+                        spriteBatch.Draw(
+                            texture,
+                            screenPosition,
+                            null,
+                            Color.White,
+                            0,
+                            Vector2.Zero,
+                            SpriteEffects.None,
+                            0f
+                        );
+                        spriteBatch.End();
+                    }
                     break;
             }
 
             // Render children.
             foreach (var child in Children)
             {
-                child.Render(context);
+                child.Render(context.SubContext(child.Position));
             }
         }
     }

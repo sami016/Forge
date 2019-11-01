@@ -15,7 +15,7 @@ namespace Forge.UI.Glass.Templates
         /// <summary>
         /// Called when the element template is initialised.
         /// </summary>
-        void Initialise();
+        void PreEvaluate();
 
         /// <summary>
         /// Evaluate the template into a component.

@@ -6,24 +6,32 @@ using Forge.Core.Rendering;
 using Forge.Core.Scenes;
 using Forge.Core.Utilities;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace Forge.Core.Engine
 {
     public class ForgeEngine
     {
+        private GraphicsDeviceManager _graphics;
+        private SpriteBatch _spriteBatch;
+
+        public event Action Initialised;
+
         public ServiceContainer ServiceContainer { get; } = new ServiceContainer();
         public SideEffectManager SideEffectManager { get; set; }
         public EntityManager EntityManager { get; }
+
         public GameLoop GameLoop { get; }
         public ExecutePool ExecutePool { get; }
         public SceneManager SceneManager { get; }
 
         public IList<GameLoopPhase> Phases { get; set; }
 
-        public ForgeEngine(int threadCount)
+        public ForgeEngine(int threadCount, IList<Type> indexTypes)
         {
             SideEffectManager = new SideEffectManager(threadCount);
-            EntityManager = new EntityManager(new ParallelCollection<Entity>(threadCount, ushort.MaxValue), SideEffectManager, ServiceContainer);
+            EntityManager = new EntityManager(new EntityPool(threadCount, ushort.MaxValue, indexTypes), indexTypes, SideEffectManager, ServiceContainer);
             GameLoop = new GameLoop(EntityManager, SideEffectManager);
             ExecutePool = new ExecutePool(threadCount, GameLoop);
             SceneManager = new SceneManager(ServiceContainer);
@@ -40,12 +48,29 @@ namespace Forge.Core.Engine
             };
         }
 
+        public void Initialise(GraphicsDeviceManager graphics, ContentManager content)
+        {
+            _graphics = graphics;
+            _spriteBatch = new SpriteBatch(_graphics.GraphicsDevice);
+            ServiceContainer.AddService<GraphicsDeviceManager>(graphics);
+            ServiceContainer.AddService<GraphicsDevice>(graphics.GraphicsDevice);
+            ServiceContainer.AddService<ContentManager>(content);
+
+            Initialised?.Invoke();
+        }
+
         public void Draw(GameTime gameTime)
         {
+            if (_graphics == null)
+            {
+                return;
+            }
+            var context = new RenderContext(gameTime, _spriteBatch, _graphics?.GraphicsDevice);
+
             var renderables = EntityManager.GetAll<IRenderable>();
             foreach (var renderable in renderables)
             {
-                renderable.Render(gameTime);
+                renderable.Render(context);
             }
         }
 

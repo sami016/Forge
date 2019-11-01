@@ -19,25 +19,24 @@ namespace Forge.Core.Engine
         //private readonly ComponentInjector _injector;
         public SideEffectManager UpdateContext { get; set; }
 
-        public ParallelCollection<Entity> Pools { get; }
+        public EntityPool Pools { get; }
         public IEnumerable<Entity> All => Pools.Entities;
 
         public Entity Get(uint id) => Pools.Get(id);
 
-        public EntityManager(ParallelCollection<Entity> pools, SideEffectManager updateContext, IServiceProvider serviceProvider)
+        public EntityManager(EntityPool pools, IList<Type> indexTypes, SideEffectManager updateContext, IServiceProvider serviceProvider)
         {
             Pools = pools;
             UpdateContext = updateContext;
             ServiceProvider = serviceProvider;
             
-            _componentIndexer = new ComponentIndexer();
+            _componentIndexer = new ComponentIndexer(indexTypes);
             Pools.ItemAdded += ItemAdded;
         }
 
         public Entity Create()
         {
             var entity = new Entity(this);
-            entity.Id = Pools.Add(entity);
             // On the next time step, add component for indexing.
             // Useless indexing now, since it doesn't have components added until after this returns.
             this.Update(() => _componentIndexer.Index(entity));

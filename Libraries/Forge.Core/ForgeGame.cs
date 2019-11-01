@@ -20,6 +20,12 @@ namespace Forge.Core
             IsMouseVisible = true;
         }
 
+        protected override void Initialize()
+        {
+            base.Initialize();
+            _engine.Initialise(_graphics, Content);
+        }
+
         protected override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
