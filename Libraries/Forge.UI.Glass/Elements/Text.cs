@@ -14,15 +14,22 @@ namespace Forge.UI.Glass.Elements
         {
         }
 
+        public Text(string value, params IElement[] children) : base(children)
+        {
+            Value = value;
+        }
+
         public override void Render(UIRenderContext context)
         {
+            var screenPosition = context.RenderPort;
+
             var font = context.Fonts.Get(Font ?? "Default");
             if (font == null)
             {
                 font = context.Fonts.Get("Default");
             }
             context.SpriteBatch.Begin();
-            context.SpriteBatch.DrawString(font, Value, new Vector2(10, 10), Color.White);
+            context.SpriteBatch.DrawString(font, Value, screenPosition.Location.ToVector2(), Color.White);
             context.SpriteBatch.End();
         }
     }

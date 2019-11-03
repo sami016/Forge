@@ -20,13 +20,13 @@ namespace Forge.UI.Glass
 
         [Inject] public ResourceManager<SpriteFont> Fonts { get; set; }
         [Inject] public ResourceManager<Color> Colours { get; set; }
-        [Inject]  public ResourceManager<Texture2D> Textures { get; set; }
+        [Inject] public ResourceManager<Texture2D> Textures { get; set; }
         [Inject] public RenderResources RenderPrimitives { get; set; }
+        [Inject] public GraphicsDevice GraphicsDevice { get; set; }
 
         public UIDispose Create(ITemplate template)
         {
-            template.Initialise();
-            template.Reevaluate();
+            template.Position = GraphicsDevice.Viewport.Bounds;
             _templates.Add(template);
             template.Initialise();
 

@@ -20,7 +20,6 @@ namespace Forge.UI.Glass.Elements
         public Primitive(IEnumerable<IElement> children)
         {
             Children = children.ToList();
-            Initialise();
         }
 
         public void Initialise()

@@ -10,11 +10,37 @@ namespace Forge.UI.Glass.Templates
     public abstract class Template : ITemplate
     {
         public IElement Current { get; set; }
+
+        private Rectangle? _position;
+        private Action<IElement> _init;
+
         public Rectangle Position { 
-            get => Current.Position; 
+            get => Current.Position;
             set
             {
-                Current.Position = value;
+                if (Current != null)
+                {
+                    Current.Position = value;
+                } else
+                {
+                    _position = value;
+                }
+            }
+        }
+
+        public Action<IElement> Init
+        {
+            get => Current.Init;
+            set
+            {
+                if (Current != null)
+                {
+                    Current.Init = value;
+                }
+                else
+                {
+                    _init = value;
+                }
             }
         }
 
@@ -22,16 +48,14 @@ namespace Forge.UI.Glass.Templates
 
         public UIEvents Events => Current.Events;
 
-        public Action<IElement> Init { 
-            get => Current.Init;
-            set
-            {
-                Current.Init = value;
-            }
-        }
-
         public Template()
         {
+        }
+
+        public void Initialise()
+        {
+            PreEvaluate();
+            Reevaluate();
         }
 
         public virtual void PreEvaluate()
@@ -43,6 +67,15 @@ namespace Forge.UI.Glass.Templates
             try
             {
                 Current = Evaluate();
+                if (_position.HasValue)
+                {
+                    Current.Position = _position.Value;
+                }
+                if (_init != null)
+                {
+                    Current.Init = _init;
+                }
+                Current.Initialise();
             }catch(Exception ex)
             {
                 throw new Exception($"An exception occured whilst evaluating a UI template", ex);
@@ -64,7 +97,5 @@ namespace Forge.UI.Glass.Templates
         }
 
         public void Render(UIRenderContext context) => Current?.Render(context);
-
-        public void Initialise() => Current?.Initialise();
     }
 }

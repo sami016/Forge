@@ -11,9 +11,10 @@ namespace Forge.UI.Glass.Interaction
     {
         private readonly Dictionary<Type, object> _handlers = new Dictionary<Type, object>();
 
-        public void Subscribe<TEvent>(Action<TEvent> handler)
+        public UIEvents Subscribe<TEvent>(Action<TEvent> handler)
         {
             _handlers[typeof(TEvent)] = handler;
+            return this;
         }
 
         public void Unsubscribe<TEvent>()
