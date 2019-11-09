@@ -1,4 +1,6 @@
-﻿using Forge.Core.Components;
+﻿using Forge.Core;
+using Forge.Core.Components;
+using Forge.Core.Interfaces;
 using Forge.Core.Rendering;
 using Forge.Core.Resources;
 using Forge.UI.Glass.Templates;
@@ -11,9 +13,11 @@ using System.Text;
 namespace Forge.UI.Glass
 {
     public delegate void UIDispose();
-    public class UserInterfaceManager : Component, IRenderable
+    public class UserInterfaceManager : Component, IRenderable, ITick
     {
         private readonly IList<ITemplate> _templates = new List<ITemplate>();
+
+        public uint RenderOrder { get; set; } = 150;
 
         public IEnumerable<ITemplate> TemplateLayers => _templates;
         public int ActiveTemplateCount => _templates.Count;
@@ -52,6 +56,16 @@ namespace Forge.UI.Glass
                         RenderPrimitives,
                         context.GraphicsDevice.Viewport.Bounds
                     )
+                );
+            }
+        }
+
+        public void Tick(TickContext context)
+        {
+            foreach (var element in _templates)
+            {
+                element.Tick(
+                   context
                 );
             }
         }

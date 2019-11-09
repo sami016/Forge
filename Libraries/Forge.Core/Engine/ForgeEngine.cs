@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.Design;
+using System.Linq;
 using System.Text;
 using Forge.Core.Rendering;
 using Forge.Core.Scenes;
@@ -34,7 +35,7 @@ namespace Forge.Core.Engine
             EntityManager = new EntityManager(new EntityPool(threadCount, ushort.MaxValue, indexTypes), indexTypes, SideEffectManager, ServiceContainer);
             GameLoop = new GameLoop(EntityManager, SideEffectManager);
             ExecutePool = new ExecutePool(threadCount, GameLoop);
-            SceneManager = new SceneManager(ServiceContainer);
+            SceneManager = new SceneManager(ServiceContainer, EntityManager);
 
             // Register services.
             ServiceContainer.AddService<SideEffectManager>(SideEffectManager);
@@ -48,13 +49,14 @@ namespace Forge.Core.Engine
             };
         }
 
-        public void Initialise(GraphicsDeviceManager graphics, ContentManager content)
+        public void Initialise(GraphicsDeviceManager graphics, ContentManager content, GameWindow gameWindow)
         {
             _graphics = graphics;
             _spriteBatch = new SpriteBatch(_graphics.GraphicsDevice);
             ServiceContainer.AddService<GraphicsDeviceManager>(graphics);
             ServiceContainer.AddService<GraphicsDevice>(graphics.GraphicsDevice);
             ServiceContainer.AddService<ContentManager>(content);
+            ServiceContainer.AddService<GameWindow>(gameWindow);
 
             Initialised?.Invoke();
         }
@@ -67,7 +69,8 @@ namespace Forge.Core.Engine
             }
             var context = new RenderContext(gameTime, _spriteBatch, _graphics?.GraphicsDevice);
 
-            var renderables = EntityManager.GetAll<IRenderable>();
+            var renderables = EntityManager.GetAll<IRenderable>().ToList();
+            renderables.Sort((x, y) => (int)(x.RenderOrder - y.RenderOrder));
             foreach (var renderable in renderables)
             {
                 renderable.Render(context);
@@ -77,8 +80,9 @@ namespace Forge.Core.Engine
         /// <summary>
         /// Runs a single update tick.
         /// </summary>
-        public void Tick()
+        public void Tick(GameTime gameTime)
         {
+            GameLoop.GameTime = gameTime;
             // Execute configured phases on each tick.
             foreach (var phase in Phases)
             {

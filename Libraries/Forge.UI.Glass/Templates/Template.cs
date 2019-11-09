@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Forge.Core;
 using Forge.UI.Glass.Elements;
 using Forge.UI.Glass.Interaction;
 using Microsoft.Xna.Framework;
@@ -94,6 +95,11 @@ namespace Forge.UI.Glass.Templates
                 }
             }
             Current = null;
+        }
+
+        public virtual void Tick(TickContext context)
+        {
+            Current?.Tick(context);
         }
 
         public void Render(UIRenderContext context) => Current?.Render(context);

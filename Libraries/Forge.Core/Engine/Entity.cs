@@ -9,7 +9,7 @@ namespace Forge.Core.Engine
     public class Entity
     {
         private readonly IList<IComponent> _components = new List<IComponent>();
-        private readonly IDictionary<uint, Entity> _children;
+        private readonly IDictionary<uint, Entity> _children = new Dictionary<uint, Entity>();
 
         public IEnumerable<IComponent> Components => _components;
 
@@ -28,7 +28,7 @@ namespace Forge.Core.Engine
         /// </summary>
         public int ThreadContextNumber { get; internal set; }
 
-        public Entity(EntityManager entityManager)
+        internal Entity(EntityManager entityManager)
         {
             EntityManager = entityManager;
             Id = EntityManager.GenerateId();
@@ -59,7 +59,7 @@ namespace Forge.Core.Engine
         /// <returns>child entity</returns>
         public Entity Create()
         {
-            var entity = new Entity(this, EntityManager);
+            var entity = EntityManager.Create();
 
             EntityManager.Update(() =>
             {
@@ -69,9 +69,21 @@ namespace Forge.Core.Engine
             return entity;
         }
 
-        public bool Has<T>() where T : IComponent
+        public bool Has<T>()
         {
             var type = typeof(T);
+            foreach (var component in _components)
+            {
+                if (type.IsAssignableFrom(component.GetType()))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        public bool Has(Type type) 
+        {
             foreach (var component in _components)
             {
                 if (type.IsAssignableFrom(component.GetType()))
@@ -102,14 +114,16 @@ namespace Forge.Core.Engine
             EntityManager.Despawn(Id);
         }
 
-        public void Add<T>(T component)
+        public T Add<T>(T component)
             where T : IComponent
         {
+            component.Entity = this;
             EntityManager.InitialiseComponent(component);
             if (!_components.Contains(component))
             {
                 _components.Add(component);
             }
+            return component;
         }
 
         public void Remove<T>(T component)
@@ -122,7 +136,6 @@ namespace Forge.Core.Engine
         }
 
         public T Get<T>()
-            where T : IComponent
         {
             var type = typeof(T);
             foreach (var component in _components)
@@ -133,6 +146,18 @@ namespace Forge.Core.Engine
                 }
             }
             return default(T);
+        }
+
+        public object Get(Type type)
+        {
+            foreach (var component in _components)
+            {
+                if (type.IsAssignableFrom(component.GetType()))
+                {
+                    return component;
+                }
+            }
+            return null;
         }
 
 

@@ -186,7 +186,6 @@ namespace Forge.Core.Engine
             }
 
             public IEnumerable<T> GetAll<T>()
-                where T : IComponent
             {
                 var entities = _componentIndexer.GetAll<T>();
                 if (entities == null)

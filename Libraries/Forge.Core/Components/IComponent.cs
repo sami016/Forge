@@ -7,6 +7,6 @@ namespace Forge.Core.Components
 {
     public interface IComponent
     {
-        Entity Entity { get; }
+        Entity Entity { get; set; }
     }
 }

@@ -7,7 +7,7 @@ using System.Text;
 
 namespace Forge.UI.Glass.Elements
 {
-    public interface IElement : IInit
+    public interface IElement : IInit, ITick
     {
         IList<IElement> Children { get; }
         void Render(UIRenderContext context);

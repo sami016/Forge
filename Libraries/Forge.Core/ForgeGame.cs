@@ -11,6 +11,8 @@ namespace Forge.Core
         private readonly ForgeEngine _engine;
         private readonly GraphicsDeviceManager _graphics;
 
+        public Color BackgroundColour { get; set; } = Color.Black;
+
         public ForgeGame(ForgeEngine engine)
         {
             _engine = engine;
@@ -23,18 +25,18 @@ namespace Forge.Core
         protected override void Initialize()
         {
             base.Initialize();
-            _engine.Initialise(_graphics, Content);
+            _engine.Initialise(_graphics, Content, Window);
         }
 
         protected override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
-            _engine.Tick();
+            _engine.Tick(gameTime);
         }
 
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.SlateBlue);
+            GraphicsDevice.Clear(BackgroundColour);
             base.Draw(gameTime);
             _engine.Draw(gameTime);
         }

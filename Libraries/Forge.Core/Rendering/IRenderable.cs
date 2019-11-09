@@ -8,6 +8,7 @@ namespace Forge.Core.Rendering
 {
     public interface IRenderable : IComponent
     {
+        uint RenderOrder { get; }
         void Render(RenderContext context);
     }
 }

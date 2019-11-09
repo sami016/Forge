@@ -10,9 +10,14 @@ namespace Forge.Core.Scenes
 {
     public abstract class Scene : IDisposable, IInit
     {
-        public IDictionary<Type, Entity> _singletonEntities = new Dictionary<Type, Entity>();
+        // List of all singleton entities within the scene.
+        private IDictionary<Type, Entity> _singletonEntities = new Dictionary<Type, Entity>();
+        // List of all non-signleton entities within the scene.
+        private IList<Entity> _listEntities = new List<Entity>();
 
         [Inject] public EntityManager EntityManager { get; set; }
+
+        protected Action Disposal;
 
         public abstract void Initialise();
 
@@ -27,6 +32,18 @@ namespace Forge.Core.Scenes
             return singleton;
         }
 
+        /// <summary>
+        /// Creates a scene scoped entity.
+        /// When the scene is unloaded, this entity will be disposed and deleted.
+        /// </summary>
+        /// <returns></returns>
+        public Entity Create()
+        {
+            var entity = EntityManager.Create();
+            _listEntities.Add(entity);
+            return entity;
+        }
+
         public virtual void Dispose()
         {
             foreach (var type in _singletonEntities.Keys)
@@ -34,6 +51,12 @@ namespace Forge.Core.Scenes
                 var entity = _singletonEntities[type];
                 entity.Delete();
             }
+            foreach (var entity in _listEntities)
+            {
+                entity.Delete();
+            }
+
+            Disposal?.Invoke();
         }
     }
 }

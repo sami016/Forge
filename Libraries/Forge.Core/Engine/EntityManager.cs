@@ -63,7 +63,10 @@ namespace Forge.Core.Engine
 
         internal void Spawned(Entity entity)
         {
-            entity.Id = Pools.Add(entity);
+            entity.Update(() =>
+            {
+                entity.Id = Pools.Add(entity);
+            });
         }
 
         public IEnumerable<T> GetAll<T>()
@@ -77,7 +80,7 @@ namespace Forge.Core.Engine
                     .Where(x => x != null && x.Has<T>());
             }
             return entities
-                .Select(x => x.Get<T>());
+                .SelectMany(x => x.GetAll<T>());
         }
 
         internal void Despawned(Entity entity)

@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Forge.Core.Interfaces
 {
-    public interface ITick : IComponent
+    public interface ITick
     {
         void Tick(TickContext context);
     }
