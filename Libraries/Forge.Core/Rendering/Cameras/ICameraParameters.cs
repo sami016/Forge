@@ -11,5 +11,6 @@ namespace Forge.Core.Rendering.Cameras
         Matrix Projection { get; }
         Matrix InverseProjection { get; }
         void Recalculate(GraphicsDevice graphicsDevice);
+        Ray CreateRay(Vector3 cameraLocation, Vector2 screenPos, Matrix inverseView, Matrix inverseViewNoTranslate);
     }
 }

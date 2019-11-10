@@ -69,7 +69,9 @@ namespace Forge.Core.Engine
             }
             var context = new RenderContext(gameTime, _spriteBatch, _graphics?.GraphicsDevice);
 
-            var renderables = EntityManager.GetAll<IRenderable>().ToList();
+            var renderables = EntityManager.GetAll<IRenderable>()
+                .Where(x => x.AutoRender)
+                .ToList();
             renderables.Sort((x, y) => (int)(x.RenderOrder - y.RenderOrder));
             foreach (var renderable in renderables)
             {

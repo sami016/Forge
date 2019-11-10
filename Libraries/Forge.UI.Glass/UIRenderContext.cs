@@ -10,6 +10,7 @@ namespace Forge.UI.Glass
 {
     public class UIRenderContext
     {
+        public GraphicsDevice GraphicsDevice { get; }
         public SpriteBatch SpriteBatch { get; }
         public GameTime GameTime { get; }
         public ResourceManager<SpriteFont> Fonts { get; }
@@ -19,8 +20,9 @@ namespace Forge.UI.Glass
         public Rectangle RenderPort { get; }
 
 
-        public UIRenderContext(SpriteBatch spriteBatch, GameTime gameTime, ResourceManager<SpriteFont> fonts, ResourceManager<Color> colours, ResourceManager<Texture2D> textures, RenderResources renderPrimitives, Rectangle renderPort)
+        public UIRenderContext(GraphicsDevice graphicsDevice, SpriteBatch spriteBatch, GameTime gameTime, ResourceManager<SpriteFont> fonts, ResourceManager<Color> colours, ResourceManager<Texture2D> textures, RenderResources renderPrimitives, Rectangle renderPort)
         {
+            GraphicsDevice = graphicsDevice;
             SpriteBatch = spriteBatch;
             GameTime = gameTime;
             Fonts = fonts;
@@ -38,7 +40,7 @@ namespace Forge.UI.Glass
         public UIRenderContext SubContext(Rectangle subPosition)
         {
             var newRenderPort = new Rectangle(RenderPort.X + subPosition.X, RenderPort.Y + subPosition.Y, subPosition.Width, subPosition.Height);
-            return new UIRenderContext(SpriteBatch, GameTime, Fonts, Colours, Textures, RenderPrimitives, newRenderPort);
+            return new UIRenderContext(GraphicsDevice, SpriteBatch, GameTime, Fonts, Colours, Textures, RenderPrimitives, newRenderPort);
         }
     }
 }

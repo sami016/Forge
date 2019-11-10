@@ -162,7 +162,6 @@ namespace Forge.Core.Engine
 
 
         public IEnumerable<T> GetAll<T>()
-            where T : IComponent
         {
             var type = typeof(T);
             return _components

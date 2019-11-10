@@ -9,6 +9,7 @@ namespace Forge.Core.Rendering
     public interface IRenderable : IComponent
     {
         uint RenderOrder { get; }
+        bool AutoRender { get; }
         void Render(RenderContext context);
     }
 }

@@ -77,6 +77,11 @@ namespace Forge.Core.Rendering.Cameras
             CameraParameters?.Recalculate(GraphicsDevice);
         }
 
+        public Ray CreateRay(Vector2 screenPos)
+        {
+            return CameraParameters.CreateRay(Position.Location, screenPos, InverseView, InverseViewNoTranslate);
+        }
+
         public void Recalculate()
         {
             var basisTransform = Matrix.CreateFromQuaternion(Position.Rotation);
@@ -106,18 +111,6 @@ namespace Forge.Core.Rendering.Cameras
                 Vector3.Left,
                 basisTransform
             );
-        }
-
-        public Vector3 ScreenToWorldDirection(Vector2 screenPos)
-        {
-            var screenPos4 = new Vector4(screenPos.X, screenPos.Y, 1, 1);
-
-            var viewSpace = Vector4.Transform(screenPos4, InverseProjection);
-
-            var worldTrasform = Vector4.Transform(viewSpace, InverseView);
-
-            return new Vector3(worldTrasform.X, worldTrasform.Y, worldTrasform.Z);
-            //return Vector3.Transform(screenPos3, InverseProjection);
         }
 
 

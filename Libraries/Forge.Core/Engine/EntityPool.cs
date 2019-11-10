@@ -195,7 +195,7 @@ namespace Forge.Core.Engine
                         .Where(x => x != null && x.Has<T>());
                 }
                 return entities
-                    .Select(x => x.Get<T>());
+                    .SelectMany(x => x.GetAll<T>());
             }
         }
     }

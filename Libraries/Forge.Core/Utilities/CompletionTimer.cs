@@ -28,5 +28,6 @@ namespace Forge.Core.Utilities
         public bool Completed => _current >= _target;
 
         public TimeSpan RemainingTime => TimeSpan.FromTicks(_target - _current);
+        public float CompletedFraction => Math.Min((float)_current / _target, 1f);
     }
 }

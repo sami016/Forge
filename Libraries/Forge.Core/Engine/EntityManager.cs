@@ -37,9 +37,6 @@ namespace Forge.Core.Engine
         public Entity Create()
         {
             var entity = new Entity(this);
-            // On the next time step, add component for indexing.
-            // Useless indexing now, since it doesn't have components added until after this returns.
-            this.Update(() => _componentIndexer.Index(entity));
             return entity;
         }
 
@@ -65,6 +62,9 @@ namespace Forge.Core.Engine
         {
             entity.Update(() =>
             {
+                // On the next time step, add component for indexing.
+                // Useless indexing now, since it doesn't have components added until after this returns.
+                _componentIndexer.Index(entity);
                 entity.Id = Pools.Add(entity);
             });
         }

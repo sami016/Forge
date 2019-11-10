@@ -17,6 +17,7 @@ namespace Forge.Core.Rendering.Cameras
         public float? MaxX { get; set; }
         public float? MaxY { get; set; }
         private float? _width = null;
+        private float? _height;
 
         public OrthographicCameraParameters()
         {
@@ -41,15 +42,15 @@ namespace Forge.Core.Rendering.Cameras
             {
                 MaxX = _width / 2;
             }
-            var height = _width * (graphicsDevice.Viewport.Height / (float)graphicsDevice.Viewport.Width);
+            _height = _width * (graphicsDevice.Viewport.Height / (float)graphicsDevice.Viewport.Width);
 
             if (!MinY.HasValue)
             {
-                MinY = -height / 2;
+                MinY = -_height.Value / 2;
             }
             if (!MaxY.HasValue)
             {
-                MaxY = height / 2;
+                MaxY = _height.Value / 2;
             }
             Projection = Matrix.CreateOrthographicOffCenter(
                 MinX.Value,
@@ -60,6 +61,20 @@ namespace Forge.Core.Rendering.Cameras
                 ZFarPlane
             );
             InverseProjection = Matrix.Invert(Projection);
+        }
+
+        public Ray CreateRay(Vector3 cameraLocation, Vector2 screenPos, Matrix inverseView, Matrix inverseViewNoTranslate)
+        {
+            var worldDirection = Vector3.Transform(Vector3.Forward, inverseView);
+            worldDirection.Normalize();
+            var worldSpaceUp = Vector3.Transform(Vector3.Up, inverseViewNoTranslate);
+            var worldSpaceLeft = Vector3.Transform(Vector3.Left, inverseViewNoTranslate);
+
+            Console.WriteLine(worldSpaceUp);
+            var pos = cameraLocation + screenPos.X * worldSpaceLeft * _width.Value + screenPos.Y * worldSpaceUp * _height.Value;
+            //Console.WriteLine(pos);
+
+            return new Ray(pos, worldDirection);
         }
     }
 }

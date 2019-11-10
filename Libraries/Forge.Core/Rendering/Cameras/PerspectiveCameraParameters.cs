@@ -28,6 +28,16 @@ namespace Forge.Core.Rendering.Cameras
             InverseProjection = Matrix.Invert(Projection);
         }
 
+        public Ray CreateRay(Vector3 cameraLocation, Vector2 screenPos, Matrix inverseView, Matrix inverseViewNoTranslate)
+        {
+            var screenPos4 = new Vector4(screenPos.X, screenPos.Y, 1, 1);
+            var viewSpace = Vector4.Transform(screenPos4, InverseProjection);
+            var worldTrasform = Vector4.Transform(viewSpace, inverseView);
+            var worldDirection = new Vector3(worldTrasform.X, worldTrasform.Y, worldTrasform.Z);
+            worldDirection.Normalize();
+            return new Ray(cameraLocation, worldDirection);
+        }
+
         public Matrix Projection { get; private set; }
         public Matrix InverseProjection { get; private set; }
     }

@@ -18,15 +18,16 @@ namespace Forge.UI.Glass
         private readonly IList<ITemplate> _templates = new List<ITemplate>();
 
         public uint RenderOrder { get; set; } = 150;
+        public bool AutoRender { get; } = true;
 
         public IEnumerable<ITemplate> TemplateLayers => _templates;
         public int ActiveTemplateCount => _templates.Count;
 
+        [Inject] public GraphicsDevice GraphicsDevice { get; set; }
         [Inject] public ResourceManager<SpriteFont> Fonts { get; set; }
         [Inject] public ResourceManager<Color> Colours { get; set; }
         [Inject] public ResourceManager<Texture2D> Textures { get; set; }
         [Inject] public RenderResources RenderPrimitives { get; set; }
-        [Inject] public GraphicsDevice GraphicsDevice { get; set; }
 
         public UIDispose Create(ITemplate template)
         {
@@ -48,6 +49,7 @@ namespace Forge.UI.Glass
                 element.Render(
                     new UIRenderContext
                     (
+                        GraphicsDevice,
                         context.SpriteBatch,
                         context.GameTime,
                         Fonts,

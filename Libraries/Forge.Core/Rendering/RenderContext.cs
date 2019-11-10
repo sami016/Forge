@@ -19,5 +19,7 @@ namespace Forge.Core.Rendering
         public GameTime GameTime { get; }
         public SpriteBatch SpriteBatch { get; }
         public GraphicsDevice GraphicsDevice { get; }
+        public Matrix? View { get; set; }
+        public Matrix? Projection { get; set; }
     }
 }

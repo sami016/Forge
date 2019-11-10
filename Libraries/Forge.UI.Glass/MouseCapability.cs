@@ -4,6 +4,7 @@ using Forge.Core.Interfaces;
 using Forge.UI.Glass.Elements;
 using Forge.UI.Glass.Interaction;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
@@ -17,6 +18,7 @@ namespace Forge.UI.Glass
     public class MouseCapability : Component, ITick
     {
         [Inject] public UserInterfaceManager UserInterfaceManager { get; set; }
+        [Inject] public GraphicsDevice GraphicsDevice { get; set; }
         private MouseState _previousState;
 
         public MouseCapability()
@@ -37,22 +39,23 @@ namespace Forge.UI.Glass
                 && _previousState.LeftButton == ButtonState.Released) {
                 foreach (var layer in UserInterfaceManager.TemplateLayers)
                 {
-                    HitCheckRecurse(layer, Vector2.Zero, position.ToVector2());
+                    HitCheckRecurse(layer, new Rectangle(0, 0, GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height), position.ToVector2());
                 }
             }
 
             _previousState = state;
         }
 
-        private bool HitCheckRecurse(IElement element, Vector2 offset, Vector2 mousePosition)
+        private bool HitCheckRecurse(IElement element, Rectangle bounds, Vector2 mousePosition)
         {
+            var globalPosition = new Rectangle(element.Position.Location + bounds.Location, element.Position.Size);
             // First check, is the click within the element?
-            if (HitCheck(element.Position, mousePosition))
+            if (HitCheck(globalPosition, mousePosition))
             {
                 // Children first.
                 foreach (var child in element.Children)
                 {
-                    if (HitCheckRecurse(child, offset + element.Position.Location.ToVector2(), mousePosition))
+                    if (HitCheckRecurse(child, globalPosition, mousePosition))
                     {
                         return true;
                     }
