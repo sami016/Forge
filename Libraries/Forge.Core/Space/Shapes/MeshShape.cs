@@ -131,52 +131,52 @@ namespace Forge.Core.Space.Shapes
             return new MeshShape(faces);
         }
 
-        public static MeshShape FromModel<TVertexType>(Model model)
-            where TVertexType : struct, IVertexType
-        {
-            var vertexTypeInstance = new TVertexType();
-            var stride = vertexTypeInstance.VertexDeclaration.VertexStride;
-            var positionElement = vertexTypeInstance.VertexDeclaration.GetVertexElements()
-                .Where(x => x.VertexElementFormat == VertexElementFormat.Vector3)
-                .Where(x => x.VertexElementUsage == VertexElementUsage.Position)
-                .FirstOrDefault();
+        //public static MeshShape FromModel<TVertexType>(Model model)
+        //    where TVertexType : struct, IVertexType
+        //{
+        //    var vertexTypeInstance = new TVertexType();
+        //    var stride = vertexTypeInstance.VertexDeclaration.VertexStride;
+        //    var positionElement = vertexTypeInstance.VertexDeclaration.GetVertexElements()
+        //        .Where(x => x.VertexElementFormat == VertexElementFormat.Vector3)
+        //        .Where(x => x.VertexElementUsage == VertexElementUsage.Position)
+        //        .FirstOrDefault();
 
-            var numVerts = 0;
-            foreach (var mesh in model.Meshes)
-            {
-                foreach (var meshPart in mesh.MeshParts)
-                {
-                    numVerts += meshPart.IndexBuffer.IndexCount / 3;
-                }
-            }
+        //    var numVerts = 0;
+        //    foreach (var mesh in model.Meshes)
+        //    {
+        //        foreach (var meshPart in mesh.MeshParts)
+        //        {
+        //            numVerts += meshPart.IndexBuffer.IndexCount / 3;
+        //        }
+        //    }
 
-            var faces = new Vector3[numVerts][];
-            var i = 0;
-            foreach (var mesh in model.Meshes)
-            {
-                foreach (var meshPart in mesh.MeshParts)
-                {
-                    //var verts = new TVertexType[meshPart.VertexBuffer.VertexCount];
-                    //var indices = new ushort[meshPart.IndexBuffer.IndexCount];
-                    //meshPart.IndexBuffer.GetData<ushort>(indices);
-                    //meshPart.VertexBuffer.GetData<TVertexType>(verts);
+        //    var faces = new Vector3[numVerts][];
+        //    var i = 0;
+        //    foreach (var mesh in model.Meshes)
+        //    {
+        //        foreach (var meshPart in mesh.MeshParts)
+        //        {
+        //            //var verts = new TVertexType[meshPart.VertexBuffer.VertexCount];
+        //            //var indices = new ushort[meshPart.IndexBuffer.IndexCount];
+        //            //meshPart.IndexBuffer.GetData<ushort>(indices);
+        //            //meshPart.VertexBuffer.GetData<TVertexType>(verts);
 
-                    //for (var k = 0; k < indices.Length; k += 3)
-                    //{
-                    //    faces[i] = new Vector3[3];
-                    //    faces[i][0] = GetPosition(positionElement, verts[indices[k]]);
-                    //    faces[i][1] = GetPosition(positionElement, verts[indices[k + 1]]);
-                    //    faces[i][2] = GetPosition(positionElement, verts[indices[k + 2]]);
+        //            //for (var k = 0; k < indices.Length; k += 3)
+        //            //{
+        //            //    faces[i] = new Vector3[3];
+        //            //    faces[i][0] = GetPosition(positionElement, verts[indices[k]]);
+        //            //    faces[i][1] = GetPosition(positionElement, verts[indices[k + 1]]);
+        //            //    faces[i][2] = GetPosition(positionElement, verts[indices[k + 2]]);
 
-                    //    //Console.WriteLine($"{faces[i][0]}, {faces[i][1]}, {faces[i][2]}");
+        //            //    //Console.WriteLine($"{faces[i][0]}, {faces[i][1]}, {faces[i][2]}");
 
-                    //    i++;
-                    //}
-                }
-            }
+        //            //    i++;
+        //            //}
+        //        }
+        //    }
 
-            return new MeshShape(faces);
-        }
+        //    return new MeshShape(faces);
+        //}
 
         private float CalculateCollisionRadius()
         {
