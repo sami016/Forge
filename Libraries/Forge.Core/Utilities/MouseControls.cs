@@ -22,5 +22,7 @@ namespace Forge.Core.Utilities {
 
         public bool LeftClicked => _currentState.Value.LeftButton == ButtonState.Pressed
             && (_lastState == null || _lastState.Value.LeftButton == ButtonState.Released);
+        public bool RightClicked => _currentState.Value.RightButton == ButtonState.Pressed
+            && (_lastState == null || _lastState.Value.RightButton == ButtonState.Released);
     }
 }

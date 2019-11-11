@@ -5,7 +5,9 @@ using Forge.Core.Resources;
 using Forge.Core.Space;
 using Forge.Core.Space.Bodies;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Media;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -23,9 +25,10 @@ namespace Forge.Core
             builder.AddSingleton<ResourceManager<SpriteFont>>(() => new ResourceManager<SpriteFont>());
             builder.AddSingleton<ResourceManager<Color>>(() => new ResourceManager<Color>());
             builder.AddSingleton<ResourceManager<Texture2D>>(() => new ResourceManager<Texture2D>());
+            builder.AddSingleton<ResourceManager<Song>>(() => new ResourceManager<Song>());
+            builder.AddSingleton<ResourceManager<SoundEffect>>(() => new ResourceManager<SoundEffect>());
             builder.AddSingleton<RenderResources>(() => new RenderResources());
             builder.AddSingleton<CameraManager>(() => new CameraManager());
-
 
             return builder;
         }
