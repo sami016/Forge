@@ -60,7 +60,10 @@ namespace Forge.Core.Engine
         public Entity Create()
         {
             var entity = EntityManager.Create();
-
+            entity.Update(() =>
+            {
+                entity.Parent = this;
+            });
             EntityManager.Update(() =>
             {
                 _children.Add(entity.Id, entity);
