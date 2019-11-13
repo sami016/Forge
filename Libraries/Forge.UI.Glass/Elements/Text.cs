@@ -9,6 +9,7 @@ namespace Forge.UI.Glass.Elements
     {
         public string Value { get; set; }
         public string Font { get; set; }
+        public Color? Colour { get; set; }
 
         public Text(params IElement[] children) : base(children)
         {
@@ -29,7 +30,7 @@ namespace Forge.UI.Glass.Elements
                 font = context.Fonts.Get("Default");
             }
             context.SpriteBatch.Begin();
-            context.SpriteBatch.DrawString(font, Value, screenPosition.Location.ToVector2(), Color.White);
+            context.SpriteBatch.DrawString(font, Value, screenPosition.Location.ToVector2(), Colour ?? Color.White);
             context.SpriteBatch.End();
         }
     }
