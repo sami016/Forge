@@ -62,9 +62,9 @@ namespace Forge.Core
             return this;
         }
 
-        public ForgeGame Create()
+        public ForgeGame Create(int? numberOfCores = null)
         {
-            var engine = new ForgeEngine(Environment.ProcessorCount, _indexInterfaces);
+            var engine = new ForgeEngine(numberOfCores ?? Environment.ProcessorCount, _indexInterfaces);
             engine.Initialised += () =>
             {
                 foreach (var entry in _singletonCreators)

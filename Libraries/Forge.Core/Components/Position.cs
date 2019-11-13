@@ -53,6 +53,20 @@ namespace Forge.Core.Components
                 _dirty = true;
             }
         }
+        
+        private Vector3? _rotationCenter = null;
+        /// <summary>
+        /// The velocity of the object.
+        /// </summary>
+        public Vector3 RotationCenter
+        {
+            get => _rotationCenter ?? Vector3.Zero;
+            set
+            {
+                _rotationCenter = value;
+                _dirty = true;
+            }
+        }
 
         private Matrix _worldTransform;
         /// <summary>
@@ -65,8 +79,17 @@ namespace Forge.Core.Components
                 // Update the transform in a lazy manner whenever state is dirty.
                 if (_dirty)
                 {
-                    _worldTransform = Matrix.CreateFromQuaternion(_rotation)
-                        * Matrix.CreateTranslation(_location);
+                    _worldTransform = Matrix.Identity;
+                    if (_rotationCenter.HasValue)
+                    {
+                        _worldTransform *= Matrix.CreateTranslation(-_rotationCenter.Value);
+                        _worldTransform *= Matrix.CreateFromQuaternion(_rotation);
+                        _worldTransform *= Matrix.CreateTranslation(_rotationCenter.Value);
+                    } else
+                    {
+                        _worldTransform *= Matrix.CreateFromQuaternion(_rotation);
+                    }
+                    _worldTransform *= Matrix.CreateTranslation(_location);
                     _dirty = false;
                 }
                 return _worldTransform;
