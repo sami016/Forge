@@ -47,9 +47,12 @@ namespace Forge.Core.Engine
         //    return entity;
         //}
 
-        public void Despawn(uint id)
+        public void Despawn(Entity entity)
         {
-            Pools.Remove(id);
+            Console.WriteLine($"Despawning entity with id: {entity.Id}");
+            Pools.Remove(entity.Id);
+            // Remove all indexes for this entity immediately. We don't want this showing up when searching.
+            _componentIndexer.Unindex(entity);
         }
 
         private uint _idCurrent = 0;
@@ -86,13 +89,6 @@ namespace Forge.Core.Engine
             }
             return entities
                 .SelectMany(x => x.GetAll<T>());
-        }
-
-        internal void Despawned(Entity entity)
-        {
-            Pools.Remove(entity.Id);
-            // Remove all indexes for this entity immediately. We don't want this showing up when searching.
-            _componentIndexer.Unindex(entity);
         }
 
         public Entity[] GetShardSet(int shardNumber)

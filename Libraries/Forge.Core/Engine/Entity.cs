@@ -114,7 +114,11 @@ namespace Forge.Core.Engine
         /// </summary>
         public void Delete()
         {
-            EntityManager.Despawn(Id);
+            EntityManager.Despawn(this);
+            foreach (var child in Children)
+            {
+                child.Delete();
+            }
         }
 
         public T Add<T>(T component)
