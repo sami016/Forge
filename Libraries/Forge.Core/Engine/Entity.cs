@@ -1,5 +1,6 @@
 ﻿using Forge.Core.Components;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -21,6 +22,7 @@ namespace Forge.Core.Engine
         public IEnumerable<Entity> Children => _children?.Values ?? new Entity[0];
         public IEnumerable<Entity> All => Children;
         public EntityManager EntityManager { get; private set; }
+        public bool Deleted { get; private set; }
 
         /// <summary>
         /// Correspond with the entity management shard number the entity is in.
@@ -114,6 +116,7 @@ namespace Forge.Core.Engine
         /// </summary>
         public void Delete()
         {
+            Deleted = true;
             EntityManager.Despawn(this);
             foreach (var child in Children)
             {
@@ -168,12 +171,11 @@ namespace Forge.Core.Engine
         }
 
 
-        public IEnumerable<T> GetAll<T>()
+        public IEnumerable<T> GetAll<T>() => GetAll(typeof(T)).Cast<T>();
+        public IEnumerable<object> GetAll(Type componentType)
         {
-            var type = typeof(T);
             return _components
-                .Where(x => type.IsAssignableFrom(x.GetType()))
-                .Cast<T>();
+                .Where(x => componentType.IsAssignableFrom(x.GetType()));
         }
     }
 }

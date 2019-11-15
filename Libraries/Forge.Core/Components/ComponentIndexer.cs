@@ -62,12 +62,13 @@ namespace Forge.Core.Components
             }
         }
 
-        public IEnumerable<Entity> GetAll<T>()
+        public IEnumerable<Entity> GetAll<T>() => GetAll(typeof(T));
+
+        public IEnumerable<Entity> GetAll(Type componentType)
         {
-            var type = typeof(T);
-            if (_indexes.ContainsKey(type))
+            if (_indexes.ContainsKey(componentType))
             {
-                return _indexes[type];
+                return _indexes[componentType];
             }
             return null;
         }

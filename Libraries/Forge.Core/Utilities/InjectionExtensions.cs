@@ -1,4 +1,5 @@
 ﻿using Forge.Core.Components;
+using Forge.Core.Engine;
 using Forge.Core.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -13,19 +14,16 @@ namespace Forge.Core.Utilities
     {
         public static void Inject(this IServiceProvider serviceProvider, object target)
         {
-            InjectServiceProvider(serviceProvider, target);
-            if (target is IComponent component)
-            {
-                InjectInternally(component);
-            }
+            InjectInternally(serviceProvider, target);
             if (target is IInit init)
             {
                 init.Initialise();
             }
         }
 
-        private static void InjectInternally(this IComponent target)
+        private static void InjectInternally(IServiceProvider serviceProvider, object target)
         {
+            var component = target as IComponent;
             var type = target.GetType();
             foreach (var property in type.GetProperties(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance)
                 .Where(x => x.GetCustomAttribute<InjectAttribute>() != null))
@@ -34,24 +32,33 @@ namespace Forge.Core.Utilities
                 {
                     continue;
                 }
-                if (target.Entity.Has(property.PropertyType))
-                {
-                    property.SetValue(target, target.Entity.Get(property.PropertyType));
-                }
-            }
-        }
 
-        private static void InjectServiceProvider(this IServiceProvider serviceProvider, object target)
-        {
-            var type = target.GetType();
-            foreach (var property in type.GetProperties(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance)
-                .Where(x => x.GetCustomAttribute<InjectAttribute>() != null))
-            {
-                if (!property.CanWrite)
+                // If a component exists on the entity, inject this.
+                if (component != null
+                    && component.Entity.Has(property.PropertyType))
                 {
+                    property.SetValue(target, component.Entity.Get(property.PropertyType));
                     continue;
                 }
-                property.SetValue(target, serviceProvider.GetService(property.PropertyType));
+
+                // If a service exists, inject this.
+                var lookedUpService = serviceProvider.GetService(property.PropertyType);
+                if (lookedUpService != null) {
+                    property.SetValue(target, lookedUpService);
+                    continue;
+                }
+
+                // Otherwise perform a global search.
+                if (component != null)
+                {
+                    var globalSearchResult = component.Entity.EntityManager.GetAll(property.PropertyType).FirstOrDefault();
+                    if (globalSearchResult != null)
+                    {
+                        property.SetValue(target, globalSearchResult);
+                        continue;
+                    }
+                }             
+                Console.Error.WriteLine($"Dependency could not be resolved: {property.PropertyType}");
             }
         }
 

@@ -1,6 +1,7 @@
 ﻿using Forge.Core.Components;
 using Forge.Core.Utilities;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -51,8 +52,8 @@ namespace Forge.Core.Engine
         {
             Console.WriteLine($"Despawning entity with id: {entity.Id}");
             Pools.Remove(entity.Id);
-            // Remove all indexes for this entity immediately. We don't want this showing up when searching.
-            _componentIndexer.Unindex(entity);
+            // Remove all indexes for this entity. We don't want this showing up when searching.
+            this.Update(() => _componentIndexer.Unindex(entity));
         }
 
         private uint _idCurrent = 0;
@@ -65,6 +66,11 @@ namespace Forge.Core.Engine
         {
             entity.Update(() =>
             {
+                // If the entity is deleted in the first tick it exists...
+                if (entity.Deleted)
+                {
+                    return;
+                }
                 // On the next time step, add component for indexing.
                 // Useless indexing now, since it doesn't have components added until after this returns.
                 _componentIndexer.Index(entity);
@@ -77,18 +83,19 @@ namespace Forge.Core.Engine
             });
         }
 
-        public IEnumerable<T> GetAll<T>()
-            where T : IComponent
+        public IEnumerable<T> GetAll<T>() => GetAll(typeof(T)).Cast<T>();
+
+        public IEnumerable<object> GetAll(Type componentType)
         {
-            var entities = _componentIndexer.GetAll<T>();
+            var entities = _componentIndexer.GetAll(componentType);
             if (entities == null)
             {
                 // Unindexed search.
                 entities = Pools.Entities
-                    .Where(x => x != null && x.Has<T>());
+                    .Where(x => x != null && x.Has(componentType));
             }
             return entities
-                .SelectMany(x => x.GetAll<T>());
+                .SelectMany(x => x.GetAll(componentType));
         }
 
         public Entity[] GetShardSet(int shardNumber)

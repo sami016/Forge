@@ -150,6 +150,11 @@ namespace Forge.Core.Engine
                     // Index components.
                     item.Update(() =>
                     {
+                        // If the entity is deleted in the first tick it exists...
+                        if (item.Deleted)
+                        {
+                            return;
+                        }
                         if (item.Components.Any())
                         {
                             var first = item.Components.First();
@@ -168,6 +173,7 @@ namespace Forge.Core.Engine
 
             public void Release(uint id)
             {
+                Console.WriteLine($"Entity pool release - pool: {_index} id: {id}");
                 Entity deletedEntity = null;
                 lock (_lock)
                 {
@@ -176,7 +182,10 @@ namespace Forge.Core.Engine
                     Entries[localId] = default(Entity);
                     Size--;
                 }
-                _componentIndexer.Unindex(deletedEntity);
+                if (deletedEntity != null)
+                {
+                    deletedEntity.EntityManager.Update(() => _componentIndexer.Unindex(deletedEntity));
+                }
             }
 
             public Entity Get(uint id)
