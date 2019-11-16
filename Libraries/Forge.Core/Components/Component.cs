@@ -8,5 +8,9 @@ namespace Forge.Core.Components
     public class Component : IComponent
     {
         public Entity Entity { get; set; }
+
+        public virtual void Dispose()
+        {
+        }
     }
 }

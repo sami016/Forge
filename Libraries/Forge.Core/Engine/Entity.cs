@@ -122,6 +122,10 @@ namespace Forge.Core.Engine
             {
                 child.Delete();
             }
+            foreach (var component in Components)
+            {
+                component.Dispose();
+            }
         }
 
         public T Add<T>(T component)
@@ -143,6 +147,7 @@ namespace Forge.Core.Engine
             {
                 _components.Remove(component);
             }
+            component.Dispose();
         }
 
         public T Get<T>()

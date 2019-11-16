@@ -39,7 +39,7 @@ namespace Forge.Core
             builder.IndexInterface<Body>();
 
             builder.AddSingleton<RayCollider>(() => new RayCollider());
-            builder.AddSingleton<ISpace>(() => new Space.Space());
+            //builder.AddSingleton<ISpace>(() => new Space.Space());
 
             return builder;
         }

@@ -28,6 +28,9 @@ namespace Forge.Core.Utilities
             foreach (var property in type.GetProperties(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance)
                 .Where(x => x.GetCustomAttribute<InjectAttribute>() != null))
             {
+#if DEBUG
+                var propName = property.PropertyType.Name;
+#endif
                 if (!property.CanWrite)
                 {
                     continue;

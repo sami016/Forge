@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Forge.Core.Components
 {
-    public interface IComponent
+    public interface IComponent : IDisposable
     {
         Entity Entity { get; set; }
     }

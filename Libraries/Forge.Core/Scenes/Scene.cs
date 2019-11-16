@@ -25,7 +25,7 @@ namespace Forge.Core.Scenes
             where T : IComponent
         {
             var type = typeof(T);
-            var entity = new Entity(EntityManager);
+            var entity = EntityManager.Create();
             entity.Add(singleton);
             _singletonEntities[type] = entity;
 

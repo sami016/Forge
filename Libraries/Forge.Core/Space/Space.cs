@@ -15,23 +15,33 @@ namespace Forge.Core.Space
     /// </summary>
     public class Space : Component, ITick, ISpace
     {
+        // Whether to force manual control of the space's entities.
+        private readonly bool _manual;
+        private readonly IList<Entity> _manualEntities = new List<Entity>();
 
         // Factory used to create kd trees.
         private readonly KdTreeFactory<Entity> _treeFactory;
         // The latest KD-tree of objects within the space.
         private KdTree<Entity> _tree;
 
-        public Space(int splitOver = 25, int dimensions = 2)
+        public Space(bool manual = false, int splitOver = 25, int dimensions = 2)
         {
+            _manual = manual;
             _treeFactory = new KdTreeFactory<Entity>(splitOver, x => x.Get<Transform>().Location, dimensions);
         }
 
         public void Tick(TickContext context)
         {
-            // TODO: Get all moveable units.
-            var positionables = Entity.EntityManager.GetAll<Transform>()
-                .Select(x => x.Entity)
-                .ToArray();
+            IEnumerable<Entity> positionables;
+            if (!_manual)
+            {
+                positionables = Entity.EntityManager.GetAll<Transform>()
+                    .Select(x => x.Entity)
+                    .ToArray();
+            } else
+            {
+                positionables = _manualEntities;
+            }
 
             // Update the k-d tree to be used in the next tick.
             // Note: the k-d is approximate, since it is always calculated the tick before.
@@ -51,6 +61,16 @@ namespace Forge.Core.Space
                 return new Entity[0];
             }
             return _tree?.GetInRadius(location, radius, true);
+        }
+
+        public void Add(Entity entity)
+        {
+            _manualEntities.Add(entity);
+        }
+
+        public void Remove(Entity entity)
+        {
+            _manualEntities.Remove(entity);
         }
     }
 }
