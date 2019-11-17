@@ -1,5 +1,7 @@
 ﻿using Forge.Core;
+using Forge.Core.Scenes;
 using Forge.UI.Glass.Elements;
+using Forge.UI.Glass.Templates;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -15,6 +17,12 @@ namespace Forge.UI.Glass
             gameBuilder.AddSingleton(() => new MouseCapability());
 
             return gameBuilder;
+        }
+
+        public static void AddSceneUI(this UserInterfaceManager userInterfaceManager, Scene scene, Template template)
+        {
+            var uiDispose = userInterfaceManager.Create(template);
+            scene.AddDisposeAction(() => uiDispose());
         }
     }
 }

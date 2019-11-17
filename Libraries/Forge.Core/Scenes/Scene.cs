@@ -21,6 +21,11 @@ namespace Forge.Core.Scenes
 
         public abstract void Initialise();
 
+        public void AddDisposeAction(Action disposeAction)
+        {
+            Disposal += disposeAction;
+        }
+
         public T AddSingleton<T>(T singleton)
             where T : IComponent
         {

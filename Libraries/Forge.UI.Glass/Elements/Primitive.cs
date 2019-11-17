@@ -6,6 +6,7 @@ using Forge.Core;
 using Forge.Core.Engine;
 using Forge.UI.Glass.Interaction;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace Forge.UI.Glass.Elements
 {
@@ -25,10 +26,10 @@ namespace Forge.UI.Glass.Elements
             Children = children.ToList();
         }
 
-        public void Initialise()
+        public virtual void Initialise(GraphicsDevice graphicsDevice)
         {
             foreach (var element in Children) {
-                element.Initialise();
+                element.Initialise(graphicsDevice);
             } 
             Init?.Invoke(this);
         }

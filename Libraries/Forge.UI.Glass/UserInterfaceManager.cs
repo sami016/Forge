@@ -33,7 +33,7 @@ namespace Forge.UI.Glass
         {
             template.Position = GraphicsDevice.Viewport.Bounds;
             _templates.Add(template);
-            template.Initialise();
+            template.Initialise(GraphicsDevice);
 
             return () =>
             {

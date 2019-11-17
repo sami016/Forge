@@ -5,12 +5,14 @@ using Forge.Core;
 using Forge.UI.Glass.Elements;
 using Forge.UI.Glass.Interaction;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace Forge.UI.Glass.Templates
 {
     public abstract class Template : ITemplate
     {
         public IElement Current { get; set; }
+        public GraphicsDevice GraphicsDevice { get; private set; }
 
         private Rectangle? _position;
         private Action<IElement> _init;
@@ -53,8 +55,9 @@ namespace Forge.UI.Glass.Templates
         {
         }
 
-        public void Initialise()
+        public void Initialise(GraphicsDevice graphicsDevice)
         {
+            GraphicsDevice = graphicsDevice;
             PreEvaluate();
             Reevaluate();
         }
@@ -76,7 +79,7 @@ namespace Forge.UI.Glass.Templates
                 {
                     Current.Init = _init;
                 }
-                Current.Initialise();
+                Current.Initialise(GraphicsDevice);
             }catch(Exception ex)
             {
                 throw new Exception($"An exception occured whilst evaluating a UI template", ex);
