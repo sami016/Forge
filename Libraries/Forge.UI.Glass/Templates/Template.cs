@@ -51,8 +51,8 @@ namespace Forge.UI.Glass.Templates
 
         public UIEvents Events => Current.Events;
 
-        public int Vw => GraphicsDevice.Viewport.Width / 100;
-        public int Vh => GraphicsDevice.Viewport.Height / 100;
+        public float Vw => GraphicsDevice.Viewport.Width / 100f;
+        public float Vh => GraphicsDevice.Viewport.Height / 100f;
 
         public Template()
         {
