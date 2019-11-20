@@ -15,11 +15,15 @@ namespace Forge.UI.Glass.Elements
     {
 
         private RenderTarget2D _renderTarget;
-
+        public Color Colour { get; set; } = Color.Transparent;
         public IBackgroundStyling Background { get; set; }
         public Matrix? View { get; set; }
         public Matrix? Projection { get; set; }
         public IRenderable Renderable { get; set; }
+        public Action<RenderContext> RenderFunc { get; set; }
+        public bool SingleRender { get; set; } = true;
+
+        private bool _rendered = false;
 
         public ModelView() : base(new IElement[0])
         {
@@ -27,25 +31,41 @@ namespace Forge.UI.Glass.Elements
 
         public override void Render(UIRenderContext context)
         {
+            var screenPosition = context.RenderPort;
             if (View == null)
             {
-                View = Matrix.CreateLookAt(Vector3.One * 3, Vector3.Zero, Vector3.Up);
+                View = Matrix.CreateLookAt(new Vector3(1f, 1f, 1f), Vector3.Zero, Vector3.Up);
             }
             if (Projection == null)
             {
-                Projection = Matrix.CreatePerspective(Position.Width, Position.Height, 0.001f, 10000f);
+                Projection = Matrix.CreateOrthographicOffCenter(-1, 1, -1, 1, 0.001f, 10000f);
+                    //Matrix.CreatePerspective(context.GraphicsDevice.Viewport.Width, context.GraphicsDevice.Viewport.Height, 0.001f, 10000f);
             }
-            if (_renderTarget == null)
+            if (_renderTarget == null
+                || _renderTarget.Height != screenPosition.Height
+                || _renderTarget.Width != screenPosition.Width)
             {
-                _renderTarget = new RenderTarget2D(context.GraphicsDevice, Position.Width, Position.Height);
+                _rendered = false;
+                _renderTarget = new RenderTarget2D(context.GraphicsDevice, screenPosition.Width, screenPosition.Height, false, SurfaceFormat.Vector4, DepthFormat.Depth24, 0, RenderTargetUsage.PreserveContents);
             }
-            context.GraphicsDevice.SetRenderTarget(_renderTarget);
-            Renderable?.Render(new RenderContext(context.GameTime, context.SpriteBatch, context.GraphicsDevice)
+            if (!SingleRender || !_rendered)
             {
-                Projection = Projection,
-                View = View,
-            });
-            context.GraphicsDevice.SetRenderTarget(null);
+                context.GraphicsDevice.SetRenderTarget(_renderTarget);
+                context.GraphicsDevice.Clear(Colour);
+
+                var renderContext = new RenderContext(context.GameTime, context.SpriteBatch, context.GraphicsDevice)
+                {
+                    Projection = Projection,
+                    View = View,
+                };
+                Renderable?.Render(renderContext);
+                RenderFunc?.Invoke(renderContext);
+                context.GraphicsDevice.SetRenderTarget(null);
+                _rendered = true;
+            }
+            context.SpriteBatch.Begin();
+            context.SpriteBatch.Draw(_renderTarget, screenPosition, Color.White);
+            context.SpriteBatch.End();
         }
     }
 }

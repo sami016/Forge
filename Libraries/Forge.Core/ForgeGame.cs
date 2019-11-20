@@ -1,5 +1,6 @@
 ﻿using Forge.Core.Engine;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -26,6 +27,11 @@ namespace Forge.Core
         {
             base.Initialize();
             _engine.Initialise(_graphics, Content, Window);
+
+            _graphics.PreparingDeviceSettings += (object s, PreparingDeviceSettingsEventArgs args) =>
+            {
+                args.GraphicsDeviceInformation.PresentationParameters.RenderTargetUsage = RenderTargetUsage.PreserveContents;
+            };
         }
 
         protected override void Update(GameTime gameTime)

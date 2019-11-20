@@ -19,6 +19,11 @@ namespace Forge.Core.Utilities
         {
             _current = 0;
         }
+
+        public void Complete()
+        {
+            _current = _target;
+        }
         
         public void Tick(uint elapsedTicks)
         {
