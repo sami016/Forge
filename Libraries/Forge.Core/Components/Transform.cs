@@ -69,6 +69,8 @@ namespace Forge.Core.Components
         }
 
         private Matrix _worldTransform;
+        private readonly Transform _parent;
+
         /// <summary>
         /// The world transform of the object.
         /// </summary>
@@ -93,6 +95,28 @@ namespace Forge.Core.Components
                     _dirty = false;
                 }
                 return _worldTransform;
+            }
+        }
+
+        public Transform()
+        {
+
+        }
+
+        public Transform(Transform parent)
+        {
+            _parent = parent;
+        }
+
+        public Vector3 GlobalLocation
+        {
+            get
+            {
+                if (_parent == null)
+                {
+                    return Location;
+                }
+                return Vector3.Transform(Location, _parent.WorldTransform);
             }
         }
     }

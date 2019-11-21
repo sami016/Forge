@@ -19,6 +19,9 @@ namespace Forge.Core.Rendering.Cameras
         private float? _width = null;
         private float? _height;
 
+        public float Width => _width.Value;
+        public float Height => _height.Value;
+
         public OrthographicCameraParameters()
         {
         }

@@ -27,7 +27,7 @@ namespace Forge.Core.Space
         public Space(bool manual = false, int splitOver = 25, int dimensions = 2)
         {
             _manual = manual;
-            _treeFactory = new KdTreeFactory<Entity>(splitOver, x => x.Get<Transform>().Location, dimensions);
+            _treeFactory = new KdTreeFactory<Entity>(splitOver, x => x.Get<Transform>().GlobalLocation, dimensions);
         }
 
         public void Tick(TickContext context)
