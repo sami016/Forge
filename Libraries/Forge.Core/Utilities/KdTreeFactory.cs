@@ -61,6 +61,16 @@ namespace Forge.Core.Utilities
                 }
             }
 
+            // To prevent a bug occuring when all items are in the same position.
+            if (leftElements.Count() == 0)
+            {
+                return new KdNode<T>(rightElements);
+            }
+            if (rightElements.Count() == 0)
+            {
+                return new KdNode<T>(leftElements);
+            } 
+
             var nextDimension = (byte)((dimension + 1) % _dimensions);
 
             return new KdNode<T>(
