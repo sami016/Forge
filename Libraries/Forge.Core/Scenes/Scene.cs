@@ -42,10 +42,13 @@ namespace Forge.Core.Scenes
         /// When the scene is unloaded, this entity will be disposed and deleted.
         /// </summary>
         /// <returns></returns>
-        public Entity Create()
+        public Entity Create(bool inScene = true)
         {
             var entity = EntityManager.Create();
-            _listEntities.Add(entity);
+            if (inScene)
+            {
+                _listEntities.Add(entity);
+            }
             return entity;
         }
 
