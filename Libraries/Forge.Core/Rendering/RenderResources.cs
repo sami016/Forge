@@ -25,6 +25,25 @@ namespace Forge.Core.Rendering
                 var data = new Color[1];
                 data[0] = Color.White;
                 texture.SetData<Color>(data);
+                _whiteTexture = texture;
+                return texture;
+            }
+        }
+
+        private Texture2D _blackTexture;
+        public Texture2D BlackTexture
+        {
+            get
+            {
+                if (_blackTexture != null)
+                {
+                    return _blackTexture;
+                }
+                var texture = new Texture2D(GraphicsDevice, 1, 1);
+                var data = new Color[1];
+                data[0] = Color.Black;
+                texture.SetData<Color>(data);
+                _blackTexture = texture;
                 return texture;
             }
         }
