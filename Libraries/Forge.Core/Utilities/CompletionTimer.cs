@@ -6,13 +6,18 @@ namespace Forge.Core.Utilities
 {
     public class CompletionTimer
     {
-        private readonly long _target;
+        private long _target;
         private long _current;
 
         public CompletionTimer(TimeSpan timeSpan)
         {
             _target = timeSpan.Ticks;
             _current = 0;
+        }
+
+        public void ChangeTarget(TimeSpan timeSpan)
+        {
+            _target = timeSpan.Ticks;
         }
 
         public void Restart()

@@ -31,6 +31,16 @@ namespace Forge.Core.Rendering.Cameras
             _width = width;
         }
 
+        public OrthographicCameraParameters(float minX, float minY, float maxX, float maxY)
+        {
+            _width = maxX - minX;
+            _height = maxY - minY;
+            MaxX = maxX;
+            MinX = minX;
+            MaxY = maxY;
+            MinY = minY;
+        }
+
         public void Recalculate(GraphicsDevice graphicsDevice)
         {
             if (!_width.HasValue)

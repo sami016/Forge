@@ -11,6 +11,7 @@ namespace Forge.Core.Sound
     public class MusicManager : Component, IInit
     {
         [Inject] ResourceManager<Song> SongManager { get; set; }
+        private string _playing;
 
         public void Initialise()
         {
@@ -18,6 +19,10 @@ namespace Forge.Core.Sound
 
         public void Start(string songResource)
         {
+            if (songResource == _playing)
+            {
+                return;
+            }
             var song = SongManager.Get(songResource);
             if (song == null)
             {
@@ -27,8 +32,12 @@ namespace Forge.Core.Sound
             MediaPlayer.Play(song);
         }
 
-        public void Stop()
+        public void Stop(string songResource)
         {
+            if (songResource != _playing)
+            {
+                return;
+            }
             MediaPlayer.Stop();
         }
     }
