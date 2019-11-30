@@ -68,7 +68,7 @@ namespace Forge.Core.Engine
             });
             EntityManager.Update(() =>
             {
-                _children.Add(entity.Id, entity);
+                _children[entity.Id] = entity;
             });
 
             return entity;

@@ -24,5 +24,7 @@ namespace Forge.Core.Utilities {
             && (_lastState == null || _lastState.Value.LeftButton == ButtonState.Released);
         public bool RightClicked => _currentState.Value.RightButton == ButtonState.Pressed
             && (_lastState == null || _lastState.Value.RightButton == ButtonState.Released);
+
+        public int ScrollWheelValueDelta => _currentState.Value.ScrollWheelValue - _lastState.Value.ScrollWheelValue;
     }
 }
