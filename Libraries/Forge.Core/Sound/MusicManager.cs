@@ -29,6 +29,7 @@ namespace Forge.Core.Sound
                 Console.Error.WriteLine($"Song resource not located: {songResource}");
                 return;
             }
+            _playing = songResource;
             MediaPlayer.Play(song);
         }
 
@@ -38,6 +39,7 @@ namespace Forge.Core.Sound
             {
                 return;
             }
+            _playing = null;
             MediaPlayer.Stop();
         }
     }
