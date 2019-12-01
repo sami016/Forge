@@ -10,6 +10,7 @@ namespace Forge.UI.Glass.Elements
         public string Value { get; set; }
         public string Font { get; set; }
         public Color? Colour { get; set; }
+        public bool Center { get; set; }
 
         public Text(params IElement[] children) : base(children)
         {
@@ -24,13 +25,23 @@ namespace Forge.UI.Glass.Elements
         {
             var screenPosition = context.RenderPort;
 
+
             var font = context.Fonts.Get(Font ?? "Default");
             if (font == null)
             {
                 font = context.Fonts.Get("Default");
             }
+            var width = font.MeasureString(Value).X;
+
             context.SpriteBatch.Begin();
-            context.SpriteBatch.DrawString(font, Value, screenPosition.Location.ToVector2(), Colour ?? Color.White);
+            if (Center)
+            {
+                context.SpriteBatch.DrawString(font, Value, screenPosition.Location.ToVector2() - new Vector2(width, 0), Colour ?? Color.White);
+            }
+            else
+            {
+                context.SpriteBatch.DrawString(font, Value, screenPosition.Location.ToVector2(), Colour ?? Color.White);
+            }
             context.SpriteBatch.End();
         }
     }
