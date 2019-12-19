@@ -20,33 +20,20 @@ namespace Forge.Core.Engine
         public event Action Initialised;
 
         public ServiceContainer ServiceContainer { get; } = new ServiceContainer();
-        public SideEffectManager SideEffectManager { get; set; }
         public EntityManager EntityManager { get; }
 
         public GameLoop GameLoop { get; }
-        public ExecutePool ExecutePool { get; }
         public SceneManager SceneManager { get; }
 
-        public IList<GameLoopPhase> Phases { get; set; }
-
-        public ForgeEngine(int threadCount, IList<Type> indexTypes)
+        public ForgeEngine(IList<Type> indexTypes)
         {
-            SideEffectManager = new SideEffectManager(threadCount);
-            EntityManager = new EntityManager(new EntityPool(threadCount, ushort.MaxValue, indexTypes), indexTypes, SideEffectManager, ServiceContainer);
-            GameLoop = new GameLoop(EntityManager, SideEffectManager);
-            ExecutePool = new ExecutePool(threadCount, GameLoop);
+            EntityManager = new EntityManager(new EntityPool(ushort.MaxValue), indexTypes, ServiceContainer);
+            GameLoop = new GameLoop(EntityManager);
             SceneManager = new SceneManager(ServiceContainer, EntityManager);
 
             // Register services.
-            ServiceContainer.AddService<SideEffectManager>(SideEffectManager);
             ServiceContainer.AddService<EntityManager>(EntityManager);
             ServiceContainer.AddService<SceneManager>(SceneManager);
-
-            Phases = new List<GameLoopPhase>()
-            {
-                GameLoopPhase.Tick,
-                GameLoopPhase.Update
-            };
         }
 
         public void Initialise(GraphicsDeviceManager graphics, ContentManager content, GameWindow gameWindow)
@@ -85,14 +72,8 @@ namespace Forge.Core.Engine
         public void Tick(GameTime gameTime)
         {
             GameLoop.GameTime = gameTime;
-            // Execute configured phases on each tick.
-            foreach (var phase in Phases)
-            {
-                // Set the current phase on the game loop.
-                GameLoop.Phase = phase;
-                // Runs the step on each thread for the phase. Will not return until all have completed.
-                ExecutePool.RunStep();
-            }
+            // Runs the step on each thread for the phase. Will not return until all have completed.
+            GameLoop.Execute();
         }
     }
 }

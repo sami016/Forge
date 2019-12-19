@@ -17,27 +17,31 @@ namespace Forge.Core.Engine
         private ComponentIndexer _componentIndexer;
 
         public IServiceProvider ServiceProvider { get; }
-        //private readonly ComponentInjector _injector;
-        public SideEffectManager UpdateContext { get; set; }
-
         public EntityPool Pools { get; }
         public IEnumerable<Entity> All => Pools.Entities;
 
         public Entity Get(uint id) => Pools.Get(id);
 
-        public EntityManager(EntityPool pools, IList<Type> indexTypes, SideEffectManager updateContext, IServiceProvider serviceProvider)
+        public EntityManager(EntityPool pools, IList<Type> indexTypes, IServiceProvider serviceProvider)
         {
             Pools = pools;
-            UpdateContext = updateContext;
             ServiceProvider = serviceProvider;
             
             _componentIndexer = new ComponentIndexer(indexTypes);
-            Pools.ItemAdded += ItemAdded;
         }
 
         public Entity Create()
         {
             var entity = new Entity(this);
+            return entity;
+        }
+
+        public Entity Create<T>(T component)
+            where T : IComponent
+        {
+            var entity = new Entity(this);
+            entity.Add(component);
+            entity.Spawn();
             return entity;
         }
 
@@ -53,7 +57,7 @@ namespace Forge.Core.Engine
             Console.WriteLine($"Despawning entity with id: {entity.Id}");
             Pools.Remove(entity.Id);
             // Remove all indexes for this entity. We don't want this showing up when searching.
-            this.Update(() => _componentIndexer.Unindex(entity));
+            _componentIndexer.Unindex(entity);
         }
 
         private uint _idCurrent = 0;
@@ -64,23 +68,20 @@ namespace Forge.Core.Engine
 
         internal void Spawned(Entity entity)
         {
-            entity.Update(() =>
+            //// If the entity is deleted in the first tick it exists...
+            //if (entity.Deleted)
+            //{
+            //    return;
+            //}
+            // On the next time step, add component for indexing.
+            // Useless indexing now, since it doesn't have components added until after this returns.
+            _componentIndexer.Index(entity);
+            entity.Id = Pools.Add(entity);
+            Console.WriteLine($"Spawned entity with id {entity.Id}");
+            foreach (var component in entity.Components)
             {
-                // If the entity is deleted in the first tick it exists...
-                if (entity.Deleted)
-                {
-                    return;
-                }
-                // On the next time step, add component for indexing.
-                // Useless indexing now, since it doesn't have components added until after this returns.
-                _componentIndexer.Index(entity);
-                entity.Id = Pools.Add(entity);
-                Console.WriteLine($"Spawned entity with id {entity.Id}");
-                foreach (var component in entity.Components)
-                {
-                    Console.WriteLine($"\twith component: {component.GetType()}");
-                }
-            });
+                Console.WriteLine($"\twith component: {component.GetType()}");
+            }
         }
 
         public IEnumerable<T> GetAll<T>() => GetAll(typeof(T)).Cast<T>();
@@ -95,22 +96,8 @@ namespace Forge.Core.Engine
                     .Where(x => x != null && x.Has(componentType));
             }
             return entities
+                .ToArray()
                 .SelectMany(x => x.GetAll(componentType));
-        }
-
-        public Entity[] GetShardSet(int shardNumber)
-        {
-            return Pools.Sets[shardNumber];
-        }
-
-        /// <summary>
-        /// This updates the thread context number on an entity whenever it is created.
-        /// </summary>
-        /// <param name="entity">entity</param>
-        /// <param name="shardIndex">the index of the sharded pool this entity is in.</param>
-        private void ItemAdded(Entity entity, int shardIndex)
-        {
-            entity.ThreadContextNumber = shardIndex;
         }
 
         public void InitialiseComponent(IComponent component)

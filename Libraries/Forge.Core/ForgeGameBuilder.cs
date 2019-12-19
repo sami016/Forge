@@ -62,16 +62,15 @@ namespace Forge.Core
             return this;
         }
 
-        public ForgeGame Create(int? numberOfCores = null)
+        public ForgeGame Create()
         {
-            var engine = new ForgeEngine(numberOfCores ?? Environment.ProcessorCount, _indexInterfaces);
+            var engine = new ForgeEngine(_indexInterfaces);
             engine.Initialised += () =>
             {
                 foreach (var entry in _singletonCreators)
                 {
-                    var entity = engine.EntityManager.Create();
-                    var component = entry.factory();
-                    entity.Add(component as IComponent);
+                    var component = entry.factory() as IComponent;
+                    var entity = engine.EntityManager.Create(component);
                     engine.ServiceContainer.AddService(entry.type, component);
                 }
                 engine.SceneManager.SetScene(_initialSceneFactory());

@@ -22,24 +22,28 @@ namespace Forge.Core.Engine
         public IEnumerable<Entity> Children => _children?.Values ?? new Entity[0];
         public IEnumerable<Entity> All => Children;
         public EntityManager EntityManager { get; private set; }
-        public bool Deleted { get; private set; }
-
-        /// <summary>
-        /// Correspond with the entity management shard number the entity is in.
-        /// This is the index of the thread that processes this entity.
-        /// </summary>
-        public int ThreadContextNumber { get; internal set; }
+        public bool Deleted { get; private set; } = false;
+        public bool Spawned { get; private set; } = false;
 
         internal Entity(EntityManager entityManager)
         {
             EntityManager = entityManager;
             Id = EntityManager.GenerateId();
-            EntityManager.Spawned(this);
         }
 
         public Entity(Entity parent, EntityManager entityManager) : this(entityManager)
         {
             Parent = parent;
+        }
+
+        public void Spawn()
+        {
+            if (Spawned)
+            {
+                throw new InvalidOperationException("Entity has already been spawned");
+            }
+            Spawned = true;
+            EntityManager.Spawned(this);
         }
 
         //public void UpdateGeneric(Action<object> update)
@@ -62,16 +66,24 @@ namespace Forge.Core.Engine
         public Entity Create()
         {
             var entity = EntityManager.Create();
-            entity.Update(() =>
-            {
-                entity.Parent = this;
-            });
-            EntityManager.Update(() =>
-            {
-                _children[entity.Id] = entity;
-            });
+            entity.Parent = this;
+            _children[entity.Id] = entity;
 
             return entity;
+        }
+
+        /// <summary>
+        /// Creates a singleton child entity.
+        /// The entity will be spawned automatically immediately.
+        /// </summary>
+        /// <returns></returns>
+        public T Create<T>(T singletonComponent)
+            where T : IComponent
+        {
+            var entity = Create();
+            entity.Add<T>(singletonComponent);
+            entity.Spawn();
+            return singletonComponent;
         }
 
         public bool Has<T>()
@@ -176,7 +188,16 @@ namespace Forge.Core.Engine
         }
 
 
+        /// <summary>
+        /// Gets all components of a given type.
+        /// </summary>
         public IEnumerable<T> GetAll<T>() => GetAll(typeof(T)).Cast<T>();
+
+        /// <summary>
+        /// Gets all components of a given type.
+        /// </summary>
+        /// <param name="componentType">component type</param>
+        /// <returns></returns>
         public IEnumerable<object> GetAll(Type componentType)
         {
             return _components

@@ -8,6 +8,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Forge.UI.Glass
@@ -44,7 +45,7 @@ namespace Forge.UI.Glass
         public void Render(RenderContext context)
         {
             //TODO use engine renderable interface.
-            foreach (var element in _templates)
+            foreach (var element in _templates.ToArray())
             {
                 element.Position = GraphicsDevice.Viewport.Bounds;
                 element.Render(

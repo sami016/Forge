@@ -30,10 +30,8 @@ namespace Forge.Core.Scenes
             where T : IComponent
         {
             var type = typeof(T);
-            var entity = EntityManager.Create();
-            entity.Add(singleton);
+            var entity = EntityManager.Create(singleton);
             _singletonEntities[type] = entity;
-
             return singleton;
         }
 
@@ -50,6 +48,17 @@ namespace Forge.Core.Scenes
                 _listEntities.Add(entity);
             }
             return entity;
+        }
+
+        public T Create<T>(T component, bool inScene = true)
+            where T : IComponent
+        {
+            var entity = EntityManager.Create(component);
+            if (inScene)
+            {
+                _listEntities.Add(entity);
+            }
+            return component;
         }
 
         public virtual void Dispose()

@@ -8,6 +8,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Forge.UI.Glass
@@ -37,7 +38,7 @@ namespace Forge.UI.Glass
 
             if (state.LeftButton == ButtonState.Pressed 
                 && _previousState.LeftButton == ButtonState.Released) {
-                foreach (var layer in UserInterfaceManager.TemplateLayers)
+                foreach (var layer in UserInterfaceManager.TemplateLayers.ToArray())
                 {
                     HitCheckRecurse(layer, new Rectangle(0, 0, GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height), position.ToVector2());
                 }

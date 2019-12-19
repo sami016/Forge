@@ -21,18 +21,15 @@ namespace Forge.Core.Scenes
 
         public void SetScene(Scene scene)
         {
-            _entityManager.Update(() =>
+            if (Loaded != null)
             {
-                if (Loaded != null)
-                {
-                    Loaded.Dispose();
-                }
-                if (scene != null)
-                {
-                    _serviceProvider.Inject(scene);
-                }
-                Loaded = scene;
-            });
+                Loaded.Dispose();
+            }
+            Loaded = scene;
+            if (scene != null)
+            {
+                _serviceProvider.Inject(scene);
+            }
         }
     }
 }

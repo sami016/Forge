@@ -16,15 +16,12 @@ namespace Forge.Core.Utilities {
         public void Tick(TickContext context)
         {
             var keyboard = Keyboard.GetState();
-            this.Update(() =>
+            _lastState = _currentState;
+            _currentState = new Dictionary<Keys, bool>();
+            foreach (Keys key in Enum.GetValues(typeof(Keys)))
             {
-                _lastState = _currentState;
-                _currentState = new Dictionary<Keys, bool>();
-                foreach (Keys key in Enum.GetValues(typeof(Keys)))
-                {
-                    _lastState[key] = keyboard.IsKeyDown(key);
-                }
-            });
+                _lastState[key] = keyboard.IsKeyDown(key);
+            }
         }
 
         public bool HasBeenPressed(Keys key)

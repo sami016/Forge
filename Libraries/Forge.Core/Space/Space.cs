@@ -47,11 +47,7 @@ namespace Forge.Core.Space
             // Note: the k-d is approximate, since it is always calculated the tick before.
             // This optimisation is a reasonable trade off in most cases however, 
             // and at worst will lead to collisions being missed for 1 tick.
-            var tree = _treeFactory.Create(positionables);
-            this.Update(() =>
-            {
-                _tree = tree;
-            });
+            _tree = _treeFactory.Create(positionables);
         }
 
         public IEnumerable<Entity> GetNearby(Vector3 location, float radius)

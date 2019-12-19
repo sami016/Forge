@@ -11,7 +11,7 @@ namespace Forge.Core.Utilities {
     public class MouseControls : Component, ITick
     {
         private MouseState? _lastState = null;
-        private MouseState? _currentState = null;
+        private MouseState? _currentState = Mouse.GetState();
 
         public void Tick(TickContext context)
         {
