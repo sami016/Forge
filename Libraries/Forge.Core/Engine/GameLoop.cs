@@ -23,16 +23,24 @@ namespace Forge.Core.Engine
         public void Execute()
         {
             var gameTime = GameTime;
-            foreach (var tick in _entityManager.GetAll<ITick>())
+            var tickContext = new TickContext
             {
-                // To do context.
-                tick.Tick(new TickContext
-                {
-                    DeltaTime = (uint)gameTime.ElapsedGameTime.Ticks,
-                    DeltaTimeSeconds = (float)gameTime.ElapsedGameTime.TotalSeconds,
-                    ServiceProvider = null,
-                    TimeStamp = (uint)gameTime.TotalGameTime.Ticks
-                });
+                DeltaTime = (uint)gameTime.ElapsedGameTime.Ticks,
+                DeltaTimeSeconds = (float)gameTime.ElapsedGameTime.TotalSeconds,
+                ServiceProvider = null,
+                TimeStamp = (uint)gameTime.TotalGameTime.Ticks
+            };
+            foreach (var component in _entityManager.GetAll<IPreTick>())
+            {
+                component.PreTick(tickContext);
+            }
+            foreach (var component in _entityManager.GetAll<ITick>())
+            {
+                component.Tick(tickContext);
+            }
+            foreach (var component in _entityManager.GetAll<IPostTick>())
+            {
+                component.PostTick(tickContext);
             }
         }
     }

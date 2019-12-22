@@ -20,6 +20,8 @@ namespace Forge.Core
         {
             // Index all components that tick for speed.
             builder.IndexInterface<ITick>();
+            builder.IndexInterface<IPreTick>();
+            builder.IndexInterface<IPostTick>();
             builder.IndexInterface<IRenderable>();
 
             builder.AddSingleton<ResourceManager<SpriteFont>>(() => new ResourceManager<SpriteFont>());

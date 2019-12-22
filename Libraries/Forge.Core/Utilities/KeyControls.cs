@@ -8,12 +8,12 @@ using System.Text;
 
 namespace Forge.Core.Utilities { 
 
-    public class KeyControls : Component, ITick
+    public class KeyControls : Component, IPostTick
     {
         private IDictionary<Keys, bool> _lastState = new Dictionary<Keys, bool>();
         private IDictionary<Keys, bool> _currentState = new Dictionary<Keys, bool>();
 
-        public void Tick(TickContext context)
+        public void PostTick(TickContext context)
         {
             var keyboard = Keyboard.GetState();
             _lastState = _currentState;
