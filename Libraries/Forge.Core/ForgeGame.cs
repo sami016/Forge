@@ -13,6 +13,7 @@ namespace Forge.Core
         private readonly GraphicsDeviceManager _graphics;
 
         public Color BackgroundColour { get; set; } = Color.Black;
+        public IServiceProvider ServiceProvider => _engine.ServiceContainer;
 
         public ForgeGame(ForgeEngine engine)
         {
