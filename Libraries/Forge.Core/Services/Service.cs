@@ -1,32 +1,30 @@
 ﻿using Forge.Core.Components;
 using Forge.Core.Engine;
 using Forge.Core.Interfaces;
-using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Design;
 using System.Text;
 
-namespace Forge.Core.Scenes
+namespace Forge.Core.Services
 {
-    public abstract class Scene : Component, IDisposable, IInit
+    /// <summary>
+    /// A service is a set of resources running in the background.
+    /// </summary>
+    public class Service : Component, IDisposable, IInit
     {
-        // List of all singleton entities within the scene.
+        // List of all singleton entities within the service.
         private IDictionary<Type, Entity> _singletonEntities = new Dictionary<Type, Entity>();
+
         [Inject] public ServiceContainer ServiceContainer { get; set; }
 
-        protected Action Disposal;
-
-        public abstract void Initialise();
-
-        public void AddDisposeAction(Action disposeAction)
+        public virtual void Initialise()
         {
-            Disposal += disposeAction;
         }
 
         /// <summary>
-        /// Creates a singleton entity within the scene.
-        /// This entity will automatically be deleted when the scene is destroyed.
+        /// Creates a singleton entity within the service.
+        /// This entity will automatically be deleted when the service is destroyed.
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="singleton"></param>
@@ -40,8 +38,8 @@ namespace Forge.Core.Scenes
         }
 
         /// <summary>
-        /// Creates a scene scoped entity.
-        /// When the scene is unloaded, this entity will be disposed and deleted.
+        /// Creates a service scoped entity.
+        /// When the service is unloaded, this entity will be disposed and deleted.
         /// </summary>
         /// <returns></returns>
         public Entity Create(bool inScene = true)
@@ -50,7 +48,8 @@ namespace Forge.Core.Scenes
         }
 
         /// <summary>
-        /// Creates an entity within the scene.
+        /// Creates an entity within the service.
+        /// When the service is unloaded, this entity will be disposed and deleted.
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="component"></param>
@@ -67,8 +66,6 @@ namespace Forge.Core.Scenes
             {
                 ServiceContainer.RemoveService(type);
             }
-
-            Disposal?.Invoke();
         }
     }
 }

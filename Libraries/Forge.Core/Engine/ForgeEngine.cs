@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using Forge.Core.Rendering;
 using Forge.Core.Scenes;
+using Forge.Core.Services;
 using Forge.Core.Utilities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
@@ -23,16 +24,27 @@ namespace Forge.Core.Engine
         public EntityManager EntityManager { get; }
 
         public GameLoop GameLoop { get; }
+
+        /// <summary>
+        /// Manages the active scenes.
+        /// </summary>
         public SceneManager SceneManager { get; }
+
+        /// <summary>
+        /// Manages the active services.
+        /// </summary>
+        public ServiceManager ServiceManager { get; }
 
         public ForgeEngine(IList<Type> indexTypes)
         {
             EntityManager = new EntityManager(new EntityPool(ushort.MaxValue), indexTypes, ServiceContainer);
             GameLoop = new GameLoop(EntityManager);
-            SceneManager = new SceneManager(ServiceContainer, EntityManager);
+            SceneManager = new SceneManager(EntityManager);
+            ServiceManager = new ServiceManager(EntityManager);
 
             // Register services.
             ServiceContainer.AddService<EntityManager>(EntityManager);
+            ServiceContainer.AddService<ServiceManager>(ServiceManager);
             ServiceContainer.AddService<SceneManager>(SceneManager);
         }
 
