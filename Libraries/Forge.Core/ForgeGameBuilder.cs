@@ -62,8 +62,9 @@ namespace Forge.Core
             return this;
         }
 
-        public ForgeGame Create()
+        protected ForgeEngine CreateEngine()
         {
+
             var engine = new ForgeEngine(_indexInterfaces);
             engine.Initialised += () =>
             {
@@ -75,12 +76,24 @@ namespace Forge.Core
                 }
                 engine.SceneManager.SetScene(_initialSceneFactory());
             };
+            return engine;
+        }
+
+        public ForgeGame Create()
+        {
+            var engine = CreateEngine();
             var game = new ForgeGame(engine);
             if (_backgroundColour.HasValue)
             {
                 game.BackgroundColour = _backgroundColour.Value;
             }
             return game;
+        }
+
+        public ForgeGameHeadless CreateHeadless()
+        {
+            var engine = CreateEngine();
+            return new ForgeGameHeadless(engine);
         }
     }
 }

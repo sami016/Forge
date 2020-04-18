@@ -51,11 +51,20 @@ namespace Forge.Core.Engine
         public void Initialise(GraphicsDeviceManager graphics, ContentManager content, GameWindow gameWindow)
         {
             _graphics = graphics;
-            _spriteBatch = new SpriteBatch(_graphics.GraphicsDevice);
-            ServiceContainer.AddService<GraphicsDeviceManager>(graphics);
-            ServiceContainer.AddService<GraphicsDevice>(graphics.GraphicsDevice);
-            ServiceContainer.AddService<ContentManager>(content);
-            ServiceContainer.AddService<GameWindow>(gameWindow);
+            if (_graphics != null)
+            {
+                _spriteBatch = new SpriteBatch(_graphics.GraphicsDevice);
+                ServiceContainer.AddService<GraphicsDeviceManager>(graphics);
+                ServiceContainer.AddService<GraphicsDevice>(graphics.GraphicsDevice);
+            }
+            if (content != null)
+            {
+                ServiceContainer.AddService<ContentManager>(content);
+            }
+            if (gameWindow != null)
+            {
+                ServiceContainer.AddService<GameWindow>(gameWindow);
+            }
 
             Initialised?.Invoke();
         }
