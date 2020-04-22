@@ -46,18 +46,14 @@ namespace Forge.Core.Engine
             EntityManager.Spawned(this);
         }
 
-        //public void UpdateGeneric(Action<object> update)
-        //{
-        //    _updateQueue.EnqueueUpdate(update);
-        //}
-
-        ///// <summary>
-        ///// Applies all updates in the queue of actions.
-        ///// </summary>
-        //public void ApplyUpdates()
-        //{
-        //    _updateQueue.Execute(this);
-        //}
+        /// <summary>
+        /// Reindexes the components of this entity.
+        /// This should be used in cases where a component is added after spawn, and needs to be indexed for fast lookup (e.g. IRenderable).
+        /// </summary>
+        public void Reindex()
+        {
+            EntityManager.Reindex(this);
+        }
 
         /// <summary>
         /// Creates a child entity.

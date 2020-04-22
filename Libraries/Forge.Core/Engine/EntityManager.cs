@@ -84,6 +84,12 @@ namespace Forge.Core.Engine
             }
         }
 
+        internal void Reindex(Entity entity)
+        {
+            // Reindex the entity.
+            _componentIndexer.Index(entity);
+        }
+
         public IEnumerable<T> GetAll<T>() => GetAll(typeof(T)).Cast<T>();
 
         public IEnumerable<object> GetAll(Type componentType)
