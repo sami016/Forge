@@ -27,6 +27,7 @@ namespace Forge.Core.Engine
             {
                 DeltaTime = (uint)gameTime.ElapsedGameTime.Ticks,
                 DeltaTimeSeconds = (float)gameTime.ElapsedGameTime.TotalSeconds,
+                TimeSeconds = (float)gameTime.TotalGameTime.TotalSeconds,
                 ServiceProvider = null,
                 TimeStamp = (uint)gameTime.TotalGameTime.Ticks
             };
