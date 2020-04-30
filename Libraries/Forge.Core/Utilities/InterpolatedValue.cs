@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Forge.Core.Utilities
 {
-    public struct InterpolatedValue
+    public class InterpolatedValue
     {
         public float _currentValue;
         public float _targetValue;
@@ -14,7 +14,6 @@ namespace Forge.Core.Utilities
         private bool _active;
         private readonly Mode _mode;
 
-        public float Rate { get; set; }
         public float Epsilon { get; set; }
         public TimeSpan TransitionDuration { get; set; }
 
@@ -24,14 +23,13 @@ namespace Forge.Core.Utilities
             CosineFast,
         }
 
-        public InterpolatedValue(Mode mode, float initialValue = 0f, float rate = 1f)
+        public InterpolatedValue(Mode mode, float initialValue = 0f)
         {
             _active = false;
             _mode = mode;
             _startValue = initialValue;
             _currentValue = initialValue;
             _targetValue = initialValue;
-            Rate = rate;
             Epsilon = 0.05f;
             _targetTimeSeconds = null;
             _transitionStartTimeSeconds = null;

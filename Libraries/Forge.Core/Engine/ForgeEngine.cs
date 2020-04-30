@@ -40,7 +40,7 @@ namespace Forge.Core.Engine
             EntityManager = new EntityManager(new EntityPool(ushort.MaxValue), indexTypes, ServiceContainer);
             GameLoop = new GameLoop(EntityManager);
             SceneManager = new SceneManager(EntityManager);
-            ServiceManager = new ServiceManager(EntityManager);
+            ServiceManager = new ServiceManager(EntityManager, ServiceContainer);
 
             // Register services.
             ServiceContainer.AddService<EntityManager>(EntityManager);

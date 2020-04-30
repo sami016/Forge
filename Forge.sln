@@ -18,6 +18,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SampleGame", "Samples\Sampl
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Forge.UI.Glass", "Libraries\Forge.UI.Glass\Forge.UI.Glass.csproj", "{A9235597-3AC7-487B-86BC-E69B62198E77}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Forge.Terrain", "Libraries\Forge.Terrain\Forge.Terrain.csproj", "{2F83364A-F8D9-4E61-88A6-9C1696EBB04F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -88,6 +90,18 @@ Global
 		{A9235597-3AC7-487B-86BC-E69B62198E77}.Release|x64.Build.0 = Release|Any CPU
 		{A9235597-3AC7-487B-86BC-E69B62198E77}.Release|x86.ActiveCfg = Release|Any CPU
 		{A9235597-3AC7-487B-86BC-E69B62198E77}.Release|x86.Build.0 = Release|Any CPU
+		{2F83364A-F8D9-4E61-88A6-9C1696EBB04F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2F83364A-F8D9-4E61-88A6-9C1696EBB04F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2F83364A-F8D9-4E61-88A6-9C1696EBB04F}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{2F83364A-F8D9-4E61-88A6-9C1696EBB04F}.Debug|x64.Build.0 = Debug|Any CPU
+		{2F83364A-F8D9-4E61-88A6-9C1696EBB04F}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{2F83364A-F8D9-4E61-88A6-9C1696EBB04F}.Debug|x86.Build.0 = Debug|Any CPU
+		{2F83364A-F8D9-4E61-88A6-9C1696EBB04F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2F83364A-F8D9-4E61-88A6-9C1696EBB04F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2F83364A-F8D9-4E61-88A6-9C1696EBB04F}.Release|x64.ActiveCfg = Release|Any CPU
+		{2F83364A-F8D9-4E61-88A6-9C1696EBB04F}.Release|x64.Build.0 = Release|Any CPU
+		{2F83364A-F8D9-4E61-88A6-9C1696EBB04F}.Release|x86.ActiveCfg = Release|Any CPU
+		{2F83364A-F8D9-4E61-88A6-9C1696EBB04F}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

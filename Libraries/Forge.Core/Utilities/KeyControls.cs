@@ -29,5 +29,11 @@ namespace Forge.Core.Utilities {
             var keyboard = Keyboard.GetState();
             return keyboard.IsKeyDown(key) && !_lastState[key];
         }
+
+        public bool HasBeenReleased(Keys key)
+        {
+            var keyboard = Keyboard.GetState();
+            return keyboard.IsKeyUp(key) && _lastState[key];
+        }
     }
 }
