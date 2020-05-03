@@ -11,7 +11,7 @@ namespace Forge.Core.Components
     public class Transform : Component
     {
         private bool _dirty = true;
-
+        
         private Vector3 _location = Vector3.Zero;
         /// <summary>
         /// The position of the object.

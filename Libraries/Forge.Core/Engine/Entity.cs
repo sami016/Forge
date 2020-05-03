@@ -73,7 +73,7 @@ namespace Forge.Core.Engine
         /// The entity will be spawned automatically immediately.
         /// </summary>
         /// <returns></returns>
-        public T Create<T>(T singletonComponent)
+        public T SpawnSingleton<T>(T singletonComponent)
             where T : IComponent
         {
             var entity = Create();

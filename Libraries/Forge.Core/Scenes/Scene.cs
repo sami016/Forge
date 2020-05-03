@@ -36,7 +36,7 @@ namespace Forge.Core.Scenes
         {
             ServiceContainer.AddService(typeof(T), singleton);
             _singletonEntities[typeof(T)] = singleton.Entity;
-            return Entity.Create(singleton);
+            return Entity.SpawnSingleton(singleton);
         }
 
         /// <summary>
@@ -58,7 +58,7 @@ namespace Forge.Core.Scenes
         public T Create<T>(T component)
             where T : IComponent
         {
-            return Entity.Create(component);
+            return Entity.SpawnSingleton(component);
         }
 
         public override void Dispose()
