@@ -37,17 +37,12 @@ namespace Forge.Terrain
         {
             _basicEffect = new BasicEffect(GraphicsDevice);
             _basicEffect.EnableDefaultLighting();
-            var surroundings = new Bitmap[3, 3];
-            for (var i=0; i<3; i++)
-            {
-                for (var j=0; j<3; j++)
-                {
-                    surroundings[i, j] = new System.Drawing.Bitmap(5, 5);
-                }
-            }
-            _gpuData = TerrainMeshHelpers.CreateTerrainMesh(surroundings); 
         }
 
+        public void SetHeightData(Bitmap[,] surroundingHeightmaps)
+        {
+            _gpuData = TerrainMeshHelpers.CreateTerrainMesh(surroundingHeightmaps);
+        }
         public void Render(RenderContext context)
         {
             if (context.View == null || context.Projection == null)

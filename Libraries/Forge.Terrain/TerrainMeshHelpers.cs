@@ -14,16 +14,16 @@ namespace Forge.Terrain
 
         [Inject] public GraphicsDevice GraphicsDevice { get; set; }
 
-        public GpuData CreateTerrainMesh(Bitmap[,] bitmap)
+        public GpuData CreateTerrainMesh(Bitmap[,] surroundingHeightmaps)
         {
-            if (bitmap.GetLength(0) != 3
-                || bitmap.GetLength(1) != 3)
+            if (surroundingHeightmaps.GetLength(0) != 3
+                || surroundingHeightmaps.GetLength(1) != 3)
             {
                 throw new Exception("Expected input bitmaps set to be of shape 3 by 3");
             }
 
-            var imageWidth = bitmap[1,1].Width;
-            var imageHeight = bitmap[1,1].Height;
+            var imageWidth = surroundingHeightmaps[1,1].Width;
+            var imageHeight = surroundingHeightmaps[1,1].Height;
             var meshWidth = imageWidth + 1;
             var meshHeight = imageHeight + 1;
 
@@ -34,7 +34,30 @@ namespace Forge.Terrain
             // Define sample function.
             float Sample(int coordinateX, int coordinateZ)
             {
-                return (float)random.NextDouble();
+                var surroundingIndexX = 1;
+                var surroundingIndexZ = 1;
+                if (coordinateX < 0)
+                {
+                    coordinateX += imageWidth;
+                    surroundingIndexX = 0;
+                }
+                if (coordinateZ < imageHeight)
+                {
+                    coordinateZ += 1;
+                    surroundingIndexX = 0;
+                }
+                if (coordinateX >= imageWidth)
+                {
+                    coordinateX -= imageWidth;
+                    surroundingIndexX = 2;
+                }
+                if (coordinateZ >= imageHeight)
+                {
+                    coordinateZ -= imageHeight;
+                    surroundingIndexZ = 2;
+                }
+                return (float)surroundingHeightmaps[surroundingIndexX, surroundingIndexZ]
+                        .GetPixel(coordinateX, coordinateZ).R;
             }
 
             // Build vertices.
