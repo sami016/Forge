@@ -101,7 +101,7 @@ namespace Forge.Terrain
                     }
                     normal.Normalize();
 
-                    Console.WriteLine($"index: {debugIndex} - rx: {rx}   rz: {rz}");
+                    //Console.WriteLine($"index: {debugIndex} - rx: {rx}   rz: {rz}");
                     debugIndex++;
                     vertexBufferBuilder.AddNext(
                         new VertexPositionNormalTexture(
@@ -124,11 +124,12 @@ namespace Forge.Terrain
                 {
                     var i0_0 = GetVertexIndex(x, z);
                     var i1_0 = GetVertexIndex(x+1, z);
+
                     var i0_1 = GetVertexIndex(x, z+1);
                     var i1_1 = GetVertexIndex(x+1, z+1);
 
-                    Console.WriteLine($"tri {i0_0} {i1_0} {i0_1}");
-                    Console.WriteLine($"tri {i1_0} {i1_1} {i0_1}");
+                    //Console.WriteLine($"tri {i0_0} {i1_0} {i0_1}");
+                    //Console.WriteLine($"tri {i1_0} {i1_1} {i0_1}");
 
                     indexBufferBuilder
                            .AddNext(i0_0, i0_1, i1_0)

@@ -30,14 +30,19 @@ namespace Forge.Core.Space
             _treeFactory = new KdTreeFactory<Entity>(splitOver, x => x.Get<Transform>().GlobalLocation, dimensions);
         }
 
+        protected virtual Entity[] GetEntities()
+        {
+            return Entity.EntityManager.GetAll<Transform>()
+                    .Select(x => x.Entity)
+                    .ToArray();
+        }
+
         public void Tick(TickContext context)
         {
             IEnumerable<Entity> positionables;
             if (!_manual)
             {
-                positionables = Entity.EntityManager.GetAll<Transform>()
-                    .Select(x => x.Entity)
-                    .ToArray();
+                positionables = GetEntities();
             } else
             {
                 positionables = _manualEntities;

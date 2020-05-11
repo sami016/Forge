@@ -21,6 +21,7 @@ namespace Forge.Core.Engine
         public event Action Initialised;
 
         public ServiceContainer ServiceContainer { get; } = new ServiceContainer();
+
         public EntityManager EntityManager { get; }
 
         public GameLoop GameLoop { get; }
@@ -35,7 +36,7 @@ namespace Forge.Core.Engine
         /// </summary>
         public ServiceManager ServiceManager { get; }
 
-        public ForgeEngine(IList<Type> indexTypes)
+        public ForgeEngine(IList<Type> indexTypes, GameEnvironment gameEnvironment)
         {
             EntityManager = new EntityManager(new EntityPool(ushort.MaxValue), indexTypes, ServiceContainer);
             GameLoop = new GameLoop(EntityManager);
@@ -43,6 +44,7 @@ namespace Forge.Core.Engine
             ServiceManager = new ServiceManager(EntityManager, ServiceContainer);
 
             // Register services.
+            ServiceContainer.AddService<GameEnvironment>(gameEnvironment);
             ServiceContainer.AddService<EntityManager>(EntityManager);
             ServiceContainer.AddService<ServiceManager>(ServiceManager);
             ServiceContainer.AddService<SceneManager>(SceneManager);

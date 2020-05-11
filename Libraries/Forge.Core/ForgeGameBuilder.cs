@@ -62,10 +62,9 @@ namespace Forge.Core
             return this;
         }
 
-        protected ForgeEngine CreateEngine()
+        protected ForgeEngine CreateEngine(bool graphicsEnabled)
         {
-
-            var engine = new ForgeEngine(_indexInterfaces);
+            var engine = new ForgeEngine(_indexInterfaces, new GameEnvironment(graphicsEnabled));
             engine.Initialised += () =>
             {
                 foreach (var entry in _singletonCreators)
@@ -81,7 +80,7 @@ namespace Forge.Core
 
         public ForgeGame Create()
         {
-            var engine = CreateEngine();
+            var engine = CreateEngine(true);
             var game = new ForgeGame(engine);
             if (_backgroundColour.HasValue)
             {
@@ -92,7 +91,7 @@ namespace Forge.Core
 
         public ForgeGameHeadless CreateHeadless()
         {
-            var engine = CreateEngine();
+            var engine = CreateEngine(false);
             return new ForgeGameHeadless(engine);
         }
     }

@@ -43,6 +43,7 @@ namespace Forge.Terrain
         {
             _gpuData = TerrainMeshHelpers.CreateTerrainMesh(surroundingHeightmaps);
         }
+
         public void Render(RenderContext context)
         {
             if (context.View == null || context.Projection == null)
