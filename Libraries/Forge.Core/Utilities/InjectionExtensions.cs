@@ -25,7 +25,7 @@ namespace Forge.Core.Utilities
         {
             var component = target as IComponent;
             var type = target.GetType();
-            foreach (var property in type.GetProperties(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance)
+            foreach (var property in type.GetProperties(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.FlattenHierarchy)
                 .Where(x => x.GetCustomAttribute<InjectAttribute>() != null))
             {
 #if DEBUG

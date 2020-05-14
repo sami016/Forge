@@ -11,7 +11,7 @@ namespace Forge.Terrain
 {
     public class TerrainRenderable : Component, IInit, IRenderable
     {
-        private GpuData _gpuData;
+        protected GpuData GpuData;
         private BasicEffect _basicEffect;
         private Matrix _scaleMatrix = Matrix.CreateScale(1f);
         private float _scale = 1f;
@@ -20,9 +20,9 @@ namespace Forge.Terrain
 
         public bool AutoRender { get; } = true;
 
-        [Inject] Transform Transform { get; set; }
-        [Inject] GraphicsDevice GraphicsDevice { get; set; }
-        [Inject] TerrainMeshHelpers TerrainMeshHelpers { get; set; }
+        [Inject] public Transform Transform { get; set; }
+        [Inject] public GraphicsDevice GraphicsDevice { get; set; }
+        [Inject] public TerrainMeshHelpers TerrainMeshHelpers { get; set; }
 
         public float Scale
         {
@@ -35,13 +35,22 @@ namespace Forge.Terrain
 
         public void Initialise()
         {
+            if (GraphicsDevice == null)
+            {
+                throw new Exception($"{nameof(GraphicsDevice)} was not injected");
+            }
             _basicEffect = new BasicEffect(GraphicsDevice);
             _basicEffect.EnableDefaultLighting();
         }
 
-        public void SetHeightData(Bitmap[,] surroundingHeightmaps)
+        public virtual void SetGpuData(GpuData gpuData)
         {
-            _gpuData = TerrainMeshHelpers.CreateTerrainMesh(surroundingHeightmaps);
+            GpuData = gpuData;
+        }
+
+        public virtual void SetHeightData(Bitmap[,] surroundingHeightmaps)
+        {
+            GpuData = TerrainMeshHelpers.CreateTerrainMesh(surroundingHeightmaps);
         }
 
         public void Render(RenderContext context)
@@ -57,7 +66,7 @@ namespace Forge.Terrain
             foreach (var pass in _basicEffect.CurrentTechnique.Passes)
             {
                 pass.Apply();
-                _gpuData.RenderTriangleList(GraphicsDevice);
+                GpuData.RenderTriangleList(GraphicsDevice);
             }
         }
     }

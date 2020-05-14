@@ -21,8 +21,8 @@ namespace Forge.Core.Rendering
         {
             return new GpuData
             {
-                IndexBuffer = indexBufferBuilder.Build(graphicsDevice),
-                VertexBuffer = vertexBufferBuilder.Build(graphicsDevice),
+                IndexBuffer = graphicsDevice == null ? null : indexBufferBuilder.Build(graphicsDevice),
+                VertexBuffer = graphicsDevice == null ? null : vertexBufferBuilder.Build(graphicsDevice),
 
                 Indices = indexBufferBuilder.Data,
                 Vertices = vertexBufferBuilder.Data
