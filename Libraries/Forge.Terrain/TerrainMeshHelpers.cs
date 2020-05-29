@@ -14,7 +14,7 @@ namespace Forge.Terrain
 
         [Inject] public GraphicsDevice GraphicsDevice { get; set; }
 
-        public GpuData CreateTerrainMesh(Bitmap[,] surroundingHeightmaps)
+        public GpuData CreateTerrainMesh(Bitmap[,] surroundingHeightmaps, float heightScale = 1f)
         {
             if (surroundingHeightmaps.GetLength(0) != 3
                 || surroundingHeightmaps.GetLength(1) != 3)
@@ -41,7 +41,7 @@ namespace Forge.Terrain
                     coordinateX += imageWidth;
                     surroundingIndexX = 0;
                 }
-                if (coordinateZ < imageHeight)
+                if (coordinateZ < 0)
                 {
                     coordinateZ += 1;
                     surroundingIndexX = 0;
@@ -57,7 +57,7 @@ namespace Forge.Terrain
                     surroundingIndexZ = 2;
                 }
                 return (float)surroundingHeightmaps[surroundingIndexX, surroundingIndexZ]
-                        .GetPixel(coordinateX, coordinateZ).R;
+                        .GetPixel(coordinateX, coordinateZ).A * heightScale;
             }
 
             // Build vertices.

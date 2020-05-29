@@ -9,7 +9,7 @@ using System.Text;
 
 namespace Forge.Core.Rendering
 {
-    public struct GpuData
+    public struct GpuData : IDisposable
     {
 
         public ushort[] Indices;
@@ -63,6 +63,12 @@ namespace Forge.Core.Rendering
             //{
             //    Console.WriteLine($"{formatIndex(i)} -> {formatIndex(i + 1)} -> {formatIndex(i + 2)}");
             //}
+        }
+
+        public void Dispose()
+        {
+            IndexBuffer?.Dispose();
+            VertexBuffer?.Dispose();
         }
     }
 

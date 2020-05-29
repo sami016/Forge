@@ -1,6 +1,7 @@
 ﻿using Forge.Core.Engine;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Forge.Core.Components
@@ -41,9 +42,12 @@ namespace Forge.Core.Components
                     {
                         var index = _indexes[indexType];
                         // Never index twice for a given index.
-                        if (!index.Contains(entity))
+                        lock (index)
                         {
-                            index.Add(entity);
+                            if (!index.Contains(entity))
+                            {
+                                index.Add(entity);
+                            }
                         }
                     }
                 }
@@ -55,9 +59,12 @@ namespace Forge.Core.Components
             foreach (var indexType in _indexTypes)
             {
                 var index = _indexes[indexType];
-                if (index.Contains(entity))
+                lock (index)
                 {
-                    index.Remove(entity);
+                    if (index.Contains(entity))
+                    {
+                        index.Remove(entity);
+                    }
                 }
             }
         }
@@ -68,7 +75,11 @@ namespace Forge.Core.Components
         {
             if (_indexes.ContainsKey(componentType))
             {
-                return _indexes[componentType];
+                var index = _indexes[componentType];
+                lock (index)
+                {
+                    return index.ToArray();
+                }
             }
             return null;
         }

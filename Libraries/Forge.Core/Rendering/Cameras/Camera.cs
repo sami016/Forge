@@ -12,12 +12,12 @@ namespace Forge.Core.Rendering.Cameras
     public class Camera : Component, IInit
     {
         [Inject] public GraphicsDevice GraphicsDevice { get; set; }
-        [Inject] public Transform Position { get; set; }
+        [Inject] public Transform Transform { get; set; }
 
         private static Matrix _rotationOffset = Matrix.CreateRotationY(MathHelper.ToRadians(90));
         private static Matrix _rotationOffsetInverse = Matrix.CreateRotationY(MathHelper.ToRadians(-90));
 
-        public Matrix Transform { get; set; }
+        public Matrix TransformMatrix { get; set; }
 
         /* ICamera implementation */
         private Matrix _world;
@@ -79,14 +79,14 @@ namespace Forge.Core.Rendering.Cameras
 
         public Ray CreateRay(Vector2 screenPos)
         {
-            return CameraParameters.CreateRay(Position.Location, screenPos, InverseView, InverseViewNoTranslate);
+            return CameraParameters.CreateRay(Transform.Location, screenPos, InverseView, InverseViewNoTranslate);
         }
 
         public void Recalculate()
         {
-            var basisTransform = Matrix.CreateFromQuaternion(Position.Rotation);
+            var basisTransform = Matrix.CreateFromQuaternion(Transform.Rotation);
             // Calculate the camera's world matrix.
-            _world = basisTransform * Matrix.CreateTranslation(Position.Location);
+            _world = basisTransform * Matrix.CreateTranslation(Transform.Location);
             // The view matrix is the inverse of the camera's world matrix.
             View = Matrix.Invert(_world);
             InverseView = _world;
@@ -128,8 +128,8 @@ namespace Forge.Core.Rendering.Cameras
         {
             var upDirection = up ?? Vector3.Up;
 
-            var rotationMatrix = Matrix.CreateLookAt(Vector3.Zero, location - Position.Location, upDirection);
-            Position.Rotation = Quaternion.Inverse(Quaternion.CreateFromRotationMatrix(rotationMatrix));
+            var rotationMatrix = Matrix.CreateLookAt(Vector3.Zero, location - Transform.Location, upDirection);
+            Transform.Rotation = Quaternion.Inverse(Quaternion.CreateFromRotationMatrix(rotationMatrix));
         }
 
 
@@ -137,7 +137,7 @@ namespace Forge.Core.Rendering.Cameras
         {
             if (moveVector.LengthSquared() > 0)
             {
-                LookAt(Position.Location + moveVector, Vector3.Up);
+                LookAt(Transform.Location + moveVector, Vector3.Up);
             }
         }
     }

@@ -12,7 +12,18 @@ namespace Forge.Core.Engine
         private readonly IList<IComponent> _components = new List<IComponent>();
         private readonly IDictionary<uint, Entity> _children = new Dictionary<uint, Entity>();
 
-        public IEnumerable<IComponent> Components => _components;
+        public IEnumerable<IComponent> Components
+        {
+            get
+            {
+                IComponent[] components;
+                lock (_components)
+                {
+                    components = _components.ToArray();
+                }
+                return components;
+            }
+        }
 
         /// <summary>
         /// The unit's unique identifier.
@@ -85,7 +96,13 @@ namespace Forge.Core.Engine
         public bool Has<T>()
         {
             var type = typeof(T);
-            foreach (var component in _components)
+
+            IComponent[] components;
+            lock (_components)
+            {
+                components = _components.ToArray();
+            }
+            foreach (var component in components)
             {
                 if (type.IsAssignableFrom(component.GetType()))
                 {
@@ -95,9 +112,14 @@ namespace Forge.Core.Engine
             return false;
         }
 
-        public bool Has(Type type) 
+        public bool Has(Type type)
         {
-            foreach (var component in _components)
+            IComponent[] components;
+            lock (_components)
+            {
+                components = _components.ToArray();
+            }
+            foreach (var component in components)
             {
                 if (type.IsAssignableFrom(component.GetType()))
                 {
@@ -141,9 +163,12 @@ namespace Forge.Core.Engine
         {
             component.Entity = this;
             EntityManager.InitialiseComponent(component);
-            if (!_components.Contains(component))
+            lock (_components)
             {
-                _components.Add(component);
+                if (!_components.Contains(component))
+                {
+                    _components.Add(component);
+                }
             }
             return component;
         }
@@ -151,9 +176,12 @@ namespace Forge.Core.Engine
         public void Remove<T>(T component)
             where T : IComponent
         {
-            if (_components.Contains(component))
+            lock (_components)
             {
-                _components.Remove(component);
+                if (_components.Contains(component))
+                {
+                    _components.Remove(component);
+                }
             }
             component.Dispose();
         }
@@ -161,7 +189,13 @@ namespace Forge.Core.Engine
         public T Get<T>()
         {
             var type = typeof(T);
-            foreach (var component in _components)
+            IComponent[] components;
+
+            lock (_components)
+            {
+                components = _components.ToArray();
+            }
+            foreach (var component in components)
             {
                 if (type.IsAssignableFrom(component.GetType()))
                 {
@@ -173,7 +207,14 @@ namespace Forge.Core.Engine
 
         public object Get(Type type)
         {
-            foreach (var component in _components)
+            IComponent[] components;
+
+            lock (_components)
+            {
+                components = _components.ToArray();
+            }
+
+            foreach (var component in components)
             {
                 if (type.IsAssignableFrom(component.GetType()))
                 {
@@ -196,7 +237,13 @@ namespace Forge.Core.Engine
         /// <returns></returns>
         public IEnumerable<object> GetAll(Type componentType)
         {
-            return _components
+            IComponent[] components;
+
+            lock (_components)
+            {
+                components = _components.ToArray();
+            }
+            return components
                 .Where(x => componentType.IsAssignableFrom(x.GetType()));
         }
     }

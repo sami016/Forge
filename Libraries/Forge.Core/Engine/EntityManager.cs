@@ -99,11 +99,23 @@ namespace Forge.Core.Engine
             {
                 // Unindexed search.
                 entities = Pools.Entities
-                    .Where(x => x != null && x.Has(componentType));
+                    .Where(x => x != null && x.Has(componentType))
+                    .ToArray();
             }
-            return entities
-                .ToArray()
-                .SelectMany(x => x.GetAll(componentType));
+            var ents = entities.ToArray();
+            var componentList = new List<object>();
+            foreach (var entity in ents)
+            {
+                var components = entity.GetAll(componentType);
+                foreach (var component in components)
+                {
+                    componentList.Add(component);
+                }
+            }
+            return componentList;
+            //return entities
+            //    .SelectMany(x => x.GetAll(componentType))
+            //    .ToArray();
         }
 
         public void InitialiseComponent(IComponent component)

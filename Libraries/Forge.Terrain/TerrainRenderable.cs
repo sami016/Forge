@@ -29,7 +29,7 @@ namespace Forge.Terrain
             get => _scale;
             set {
                 _scale = value;
-                _scaleMatrix = Matrix.CreateScale(value);
+                _scaleMatrix = Matrix.CreateScale(value, 1f, value);
             }
         }
 
