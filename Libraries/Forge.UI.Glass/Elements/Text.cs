@@ -36,7 +36,7 @@ namespace Forge.UI.Glass.Elements
             context.SpriteBatch.Begin();
             if (Center)
             {
-                context.SpriteBatch.DrawString(font, Value, screenPosition.Location.ToVector2() - new Vector2(width, 0), Colour ?? Color.White);
+                context.SpriteBatch.DrawString(font, Value, screenPosition.Location.ToVector2() - new Vector2(width/2f, 0), Colour ?? Color.White);
             }
             else
             {

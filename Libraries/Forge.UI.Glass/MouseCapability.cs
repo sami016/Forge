@@ -36,18 +36,28 @@ namespace Forge.UI.Glass
             }
             var position = state.Position;
 
-            if (state.LeftButton == ButtonState.Pressed 
-                && _previousState.LeftButton == ButtonState.Released) {
+            if (state.LeftButton == ButtonState.Pressed
+                && _previousState.LeftButton == ButtonState.Released)
+            {
                 foreach (var layer in UserInterfaceManager.TemplateLayers.ToArray())
                 {
-                    HitCheckRecurse(layer, new Rectangle(0, 0, GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height), position.ToVector2());
+                    HitCheckRecurse(layer, new Rectangle(0, 0, GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height), position.ToVector2(), (pos) => new MouseDownEvent(pos));
+                }
+            }
+            else if (state.LeftButton == ButtonState.Released
+                && _previousState.LeftButton == ButtonState.Pressed)
+            {
+                foreach (var layer in UserInterfaceManager.TemplateLayers.ToArray())
+                {
+                    HitCheckRecurse(layer, new Rectangle(0, 0, GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height), position.ToVector2(), (pos) => new MouseUpEvent(pos));
                 }
             }
 
             _previousState = state;
         }
 
-        private bool HitCheckRecurse(IElement element, Rectangle bounds, Vector2 mousePosition)
+        private bool HitCheckRecurse<T>(IElement element, Rectangle bounds, Vector2 mousePosition, Func<Vector2, T> eventFunc)
+            where T : MouseUIEvent
         {
             var globalPosition = new Rectangle(element.Position.Location + bounds.Location, element.Position.Size);
             // First check, is the click within the element?
@@ -56,15 +66,15 @@ namespace Forge.UI.Glass
                 // Children first.
                 foreach (var child in element.Children)
                 {
-                    if (HitCheckRecurse(child, globalPosition, mousePosition))
+                    if (HitCheckRecurse<T>(child, globalPosition, mousePosition, eventFunc))
                     {
                         return true;
                     }
                 }
 
                 // Handle any listener events.
-                var @event = new ClickUIEvent(mousePosition);
-                if (element.Events.Handles<ClickUIEvent>())
+                var @event = eventFunc(mousePosition);
+                if (element.Events.Handles<T>())
                 {
                     element.Events.Handle(@event);
                     return !@event.Propagate;

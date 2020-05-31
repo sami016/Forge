@@ -32,6 +32,7 @@ namespace Forge.Core
             builder.AddSingleton<ResourceManager<SoundEffect>>(() => new ResourceManager<SoundEffect>());
             builder.AddSingleton<RenderResources>(() => new RenderResources());
             builder.AddSingleton<CameraManager>(() => new CameraManager());
+            builder.AddSingleton<WindowControl>(() => new WindowControl());
 
             return builder;
         }

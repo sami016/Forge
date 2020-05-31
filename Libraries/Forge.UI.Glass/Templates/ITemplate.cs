@@ -26,7 +26,7 @@ namespace Forge.UI.Glass.Templates
         IElement Evaluate();
 
         /// <summary>
-        /// Makes the template render again.
+        /// Makes the template evaluate again.
         /// </summary>
         void Reevaluate();
 

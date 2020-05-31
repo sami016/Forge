@@ -23,13 +23,13 @@ namespace Forge.UI.Glass.Elements
 
         public Primitive(IEnumerable<IElement> children)
         {
-            Children = children.ToList();
+            Children = (children ?? new IElement[0]).ToList();
         }
 
-        public virtual void Initialise(GraphicsDevice graphicsDevice)
+        public virtual void Initialise(UIInitialiseContext uiInitialiseContext)
         {
             foreach (var element in Children) {
-                element.Initialise(graphicsDevice);
+                element.Initialise(uiInitialiseContext);
             } 
             Init?.Invoke(this);
         }

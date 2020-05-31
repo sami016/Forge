@@ -15,7 +15,12 @@ namespace Forge.UI.Glass.Elements
         UIEvents Events { get; }
         Action<IElement> Init { get; set; }
         void Render(UIRenderContext context);
-        void Initialise(GraphicsDevice graphicsDevice);
+
+        /// <summary>
+        /// Used to initialises elements.
+        /// </summary>
+        /// <param name="initialiseContext"></param>
+        void Initialise(UIInitialiseContext initialiseContext);
 
     }
 }

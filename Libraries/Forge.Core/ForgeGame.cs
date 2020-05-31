@@ -22,6 +22,9 @@ namespace Forge.Core
 
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
+
+            TargetElapsedTime = TimeSpan.FromSeconds(1 / 60f);
+            IsFixedTimeStep = true;
         }
 
         protected override void Initialize()

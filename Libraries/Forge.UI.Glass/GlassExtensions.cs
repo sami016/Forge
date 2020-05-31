@@ -15,6 +15,7 @@ namespace Forge.UI.Glass
             gameBuilder.IndexInterface<IElement>();
             gameBuilder.AddSingleton(() => new UserInterfaceManager());
             gameBuilder.AddSingleton(() => new MouseCapability());
+            gameBuilder.AddSingleton(() => new DragAndDropCapatility());
 
             return gameBuilder;
         }

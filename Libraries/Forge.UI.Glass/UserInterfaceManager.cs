@@ -16,12 +16,12 @@ namespace Forge.UI.Glass
     public delegate void UIDispose();
     public class UserInterfaceManager : Component, IRenderable, ITick
     {
-        private readonly IList<ITemplate> _templates = new List<ITemplate>();
+        private readonly IDictionary<ITemplate, int> _templates = new Dictionary<ITemplate, int>();
 
         public uint RenderOrder { get; set; } = 150;
         public bool AutoRender { get; } = true;
 
-        public IEnumerable<ITemplate> TemplateLayers => _templates;
+        public IEnumerable<ITemplate> TemplateLayers => _templates.Keys;
         public int ActiveTemplateCount => _templates.Count;
 
         [Inject] public GraphicsDevice GraphicsDevice { get; set; }
@@ -29,12 +29,15 @@ namespace Forge.UI.Glass
         [Inject] public ResourceManager<Color> Colours { get; set; }
         [Inject] public ResourceManager<Texture2D> Textures { get; set; }
         [Inject] public RenderResources RenderPrimitives { get; set; }
+        [Inject] IServiceProvider ServiceProvider { get; set; }
 
-        public UIDispose Create(ITemplate template)
+        public UIDispose Create(ITemplate template, int layer = 100)
         {
+            var uiInitialiseContext = new UIInitialiseContext(GraphicsDevice, ServiceProvider);
+
             template.Position = GraphicsDevice.Viewport.Bounds;
-            _templates.Add(template);
-            template.Initialise(GraphicsDevice);
+            _templates[template] = layer;
+            template.Initialise(uiInitialiseContext);
 
             return () =>
             {
@@ -45,9 +48,13 @@ namespace Forge.UI.Glass
         public void Render(RenderContext context)
         {
             //TODO use engine renderable interface.
-            foreach (var element in _templates.ToArray())
+            foreach (var element in _templates
+                .OrderBy(x => x.Value)
+                .Select(x => x.Key)
+                .ToArray()
+            )
             {
-                element.Position = GraphicsDevice.Viewport.Bounds;
+                //element.Position = GraphicsDevice.Viewport.Bounds;
                 element.Render(
                     new UIRenderContext
                     (
@@ -58,7 +65,7 @@ namespace Forge.UI.Glass
                         Colours,
                         Textures,
                         RenderPrimitives,
-                        context.GraphicsDevice.Viewport.Bounds
+                        element.Position
                     )
                 );
             }
@@ -66,7 +73,7 @@ namespace Forge.UI.Glass
 
         public void Tick(TickContext context)
         {
-            foreach (var element in _templates)
+            foreach (var element in _templates.Keys.ToArray())
             {
                 element.Tick(
                    context

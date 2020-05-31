@@ -5,12 +5,12 @@ using System.Text;
 
 namespace Forge.UI.Glass.Interaction
 {
-    public class ClickUIEvent
+    public abstract class MouseUIEvent
     {
         public Vector2 MousePosition { get; }
         public bool Propagate { get; private set; } = true;
 
-        public ClickUIEvent(Vector2 mousePosition)
+        public MouseUIEvent(Vector2 mousePosition)
         {
             MousePosition = mousePosition;
         }
@@ -20,5 +20,6 @@ namespace Forge.UI.Glass.Interaction
             Propagate = false;
         }
 
+        public abstract MouseUIEvent Clone();
     }
 }

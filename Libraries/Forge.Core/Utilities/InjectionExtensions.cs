@@ -44,6 +44,13 @@ namespace Forge.Core.Utilities
                     continue;
                 }
 
+                // Special case: service provider injection.
+                if (property.PropertyType == typeof(IServiceProvider))
+                {
+                    property.SetValue(target, serviceProvider);
+                    continue;
+                }
+
                 // If a service exists, inject this.
                 var lookedUpService = serviceProvider.GetService(property.PropertyType);
                 if (lookedUpService != null) {

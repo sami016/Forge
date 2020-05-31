@@ -9,24 +9,32 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Forge.UI.Glass.Templates
 {
+    /// <summary>
+    /// A template is a type of element that creates a tree of elements each time it is evaluated.
+    /// Templates can be reevaluated in response to a change in the game state - how this is done is left to the user.
+    /// For continual updates, the template may be reevaluated every tick, although this is less efficient compared to reevaluating only in response to relevant change.
+    /// 
+    /// All templates are elements, and will render by calling the render method of the root of the evaluated tree.
+    /// </summary>
     public abstract class Template : ITemplate
     {
         public IElement Current { get; set; }
+
+        private UIInitialiseContext _uiInitialiseContext;
+
         public GraphicsDevice GraphicsDevice { get; private set; }
 
         private Rectangle? _position;
         private Action<IElement> _init;
 
         public Rectangle Position { 
-            get => Current.Position;
+            get => Current?.Position ?? new Rectangle(0, 0, 0, 0);
             set
             {
+                _position = value;
                 if (Current != null)
                 {
                     Current.Position = value;
-                } else
-                {
-                    _position = value;
                 }
             }
         }
@@ -58,11 +66,25 @@ namespace Forge.UI.Glass.Templates
         {
         }
 
-        public void Initialise(GraphicsDevice graphicsDevice)
+        /// <summary>
+        /// Initialises the template.
+        /// </summary>
+        /// <param name="graphicsDevice"></param>
+        public void Initialise(UIInitialiseContext uiInitialiseContext)
         {
-            GraphicsDevice = graphicsDevice;
+            _uiInitialiseContext = uiInitialiseContext;
+            DoInitialise(_uiInitialiseContext);
+            GraphicsDevice = uiInitialiseContext.GraphicsDevice;
             PreEvaluate();
             Reevaluate();
+        }
+
+        /// <summary>
+        /// Perform any required service injection here.
+        /// </summary>
+        /// <param name="uIInitialiseContext">ui initialise context</param>
+        protected virtual void DoInitialise(UIInitialiseContext uIInitialiseContext)
+        {
         }
 
         public virtual void PreEvaluate()
@@ -82,7 +104,8 @@ namespace Forge.UI.Glass.Templates
                 {
                     Current.Init = _init;
                 }
-                Current.Initialise(GraphicsDevice);
+
+                Current.Initialise(_uiInitialiseContext);
             }catch(Exception ex)
             {
                 throw new Exception($"An exception occured whilst evaluating a UI template", ex);

@@ -27,6 +27,15 @@ namespace Forge.UI.Glass.Stylings
         public float BorderStretchBottom { get; set; }
         public float BorderStretchLeft { get; set; }
         public float BorderStretchRight { get; set; }
+
+        public ImageBackgroundStyling()
+        {
+        }
+
+        public ImageBackgroundStyling(string imageResource)
+        {
+            ImageResource = imageResource;
+        }
     }
 
 }
