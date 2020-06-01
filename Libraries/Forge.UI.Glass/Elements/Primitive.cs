@@ -19,7 +19,6 @@ namespace Forge.UI.Glass.Elements
         public Rectangle Position { get; set; }
         public UIEvents Events { get; } = new UIEvents();
         public Action<IElement> Init { get; set; }
-        public Entity Entity { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
         public Primitive(IEnumerable<IElement> children)
         {

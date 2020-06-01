@@ -41,7 +41,8 @@ namespace Forge.UI.Glass
             {
                 foreach (var layer in UserInterfaceManager.TemplateLayers.ToArray())
                 {
-                    HitCheckRecurse(layer, new Rectangle(0, 0, GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height), position.ToVector2(), (pos) => new MouseDownEvent(pos));
+                    // new Rectangle(0, 0, GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height)
+                    HitCheckRecurse(layer, layer.Position, position.ToVector2(), (pos) => new MouseDownEvent(pos));
                 }
             }
             else if (state.LeftButton == ButtonState.Released
@@ -75,7 +76,7 @@ namespace Forge.UI.Glass
                 // Handle any listener events.
                 var @event = eventFunc(mousePosition);
                 if (element.Events.Handles<T>())
-                {
+                {   
                     element.Events.Handle(@event);
                     return !@event.Propagate;
                 }

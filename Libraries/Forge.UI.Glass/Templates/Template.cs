@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using Forge.Core;
 using Forge.UI.Glass.Elements;
@@ -28,7 +29,7 @@ namespace Forge.UI.Glass.Templates
         private Action<IElement> _init;
 
         public Rectangle Position { 
-            get => Current?.Position ?? new Rectangle(0, 0, 0, 0);
+            get => Current?.Position ?? _position ?? new Rectangle(0, 0, 0, 0);
             set
             {
                 _position = value;
@@ -96,9 +97,18 @@ namespace Forge.UI.Glass.Templates
             try
             {
                 Current = Evaluate();
+                Current?.Initialise(_uiInitialiseContext);
                 if (_position.HasValue)
                 {
                     Current.Position = _position.Value;
+                } 
+                if (Current.Children.Any())
+                {
+                    if (Current.Position.Width == 0
+                        || Current.Position.Height == 0)
+                    {
+                        Current.SizeToChildren();
+                    }
                 }
                 if (_init != null)
                 {

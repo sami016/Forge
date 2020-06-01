@@ -67,7 +67,8 @@ namespace Forge.UI.Glass.Templates
                 .ConfigureEvents(events =>
                 {
                     events.Subscribe<MouseDownEvent>(OnMouseDown);
-                });
+                })
+                .SizeToChildren();
         }
 
         private void OnMouseDown(MouseDownEvent obj)
