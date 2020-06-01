@@ -8,7 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Forge.UI.Glass
+namespace Forge.UI.Glass.DragAndDrop
 {
     public class DragAndDropCapatility : Component, IInit, ITick
     {

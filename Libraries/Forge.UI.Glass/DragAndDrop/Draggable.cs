@@ -1,11 +1,12 @@
 ﻿using Forge.UI.Glass.Elements;
 using Forge.UI.Glass.Interaction;
+using Forge.UI.Glass.Templates;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Forge.UI.Glass.Templates
+namespace Forge.UI.Glass.DragAndDrop
 {
     public class Draggable : Template
     {
@@ -13,6 +14,8 @@ namespace Forge.UI.Glass.Templates
         private Func<IElement> _draggingEval;
         private Func<IElement> _cursorLockElementEval;
         private DragAndDropCapatility _dragAndDropCapability;
+
+        public DragOptions DragOptions { get; }
 
         private bool _isDragging = false;
         internal bool IsDragging
@@ -25,7 +28,12 @@ namespace Forge.UI.Glass.Templates
             }
         }
 
-        public Draggable()
+        public Draggable(DragOptions dragOptions)
+        {
+            DragOptions = dragOptions;
+        }
+
+        public Draggable(): this(new DragOptions())
         {
         }
 

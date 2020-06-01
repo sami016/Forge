@@ -63,6 +63,8 @@ namespace Forge.UI.Glass.Templates
         public float Vw => GraphicsDevice.Viewport.Width / 100f;
         public float Vh => GraphicsDevice.Viewport.Height / 100f;
 
+        protected TickContext TickContext { get; private set; }
+
         public Template()
         {
         }
@@ -139,6 +141,7 @@ namespace Forge.UI.Glass.Templates
         public virtual void Tick(TickContext context)
         {
             Current?.Tick(context);
+            TickContext = context;
         }
 
         public void Render(UIRenderContext context) => Current?.Render(context);
