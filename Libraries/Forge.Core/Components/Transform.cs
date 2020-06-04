@@ -108,6 +108,11 @@ namespace Forge.Core.Components
             _parent = parent;
         }
 
+        public Transform(Vector3 position)
+        {
+            Location = position;
+        }
+
         public Vector3 GlobalLocation
         {
             get

@@ -48,17 +48,20 @@ namespace Forge.UI.Glass.DragAndDrop
                 _currentPos = new Vector2(mouseState.X, mouseState.Y);
             }
 
+            var targetPos = new Vector2(mouseState.X, mouseState.Y)
+                + new Vector2(el.DragOptions.CursorPixelOffset.X, el.DragOptions.CursorPixelOffset.Y)
+                + new Vector2(el.DragOptions.CursorPercentageOffset.X * el.Position.Width / 100f, el.DragOptions.CursorPercentageOffset.Y * el.Position.Height / 100f);
+
             switch (el.DragOptions.DragTrailType)
             {
                 case DragTrailType.None:
-                    _currentPos = new Vector2(mouseState.X, mouseState.Y);
+                    _currentPos = targetPos;
                     break;
                 case DragTrailType.Linear:
                     {
                         var moveRate = el.DragOptions.DragTrailRate * TickContext.DeltaTimeSeconds;
                         var thresholdSq = moveRate * moveRate;
 
-                        var targetPos = new Vector2(mouseState.X, mouseState.Y);
                         var moveDir = (targetPos - _currentPos.Value);
                         if (moveDir.LengthSquared() > thresholdSq)
                         {
@@ -76,7 +79,6 @@ namespace Forge.UI.Glass.DragAndDrop
                 case DragTrailType.Proportional:
                     {
 
-                        var targetPos = new Vector2(mouseState.X, mouseState.Y);
                         var moveDir = (targetPos - _currentPos.Value);
                         var moveDist = moveDir.Length();
                         var moveRate = el.DragOptions.DragTrailRate * TickContext.DeltaTimeSeconds * moveDist;
