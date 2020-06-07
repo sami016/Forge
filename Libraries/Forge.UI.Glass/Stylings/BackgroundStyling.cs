@@ -15,6 +15,15 @@ namespace Forge.UI.Glass.Stylings
         public string ColourResource { get; set; }
         public Color? Colour { get; set; }
         public float BorderRadius { get; set; }
+
+        public ColourBackgroundStyling(Color? colour)
+        {
+            Colour = colour;
+        }
+
+        public ColourBackgroundStyling()
+        {
+        }
     }
 
     public sealed class ImageBackgroundStyling : IBackgroundStyling

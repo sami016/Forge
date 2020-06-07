@@ -18,9 +18,10 @@ namespace Forge.UI.Glass
         public ResourceManager<Texture2D> Textures { get; }
         public RenderResources RenderPrimitives { get; }
         public Rectangle RenderPort { get; }
+        public Matrix? Transform { get; }
 
 
-        public UIRenderContext(GraphicsDevice graphicsDevice, SpriteBatch spriteBatch, GameTime gameTime, ResourceManager<SpriteFont> fonts, ResourceManager<Color> colours, ResourceManager<Texture2D> textures, RenderResources renderPrimitives, Rectangle renderPort)
+        public UIRenderContext(GraphicsDevice graphicsDevice, SpriteBatch spriteBatch, GameTime gameTime, ResourceManager<SpriteFont> fonts, ResourceManager<Color> colours, ResourceManager<Texture2D> textures, RenderResources renderPrimitives, Rectangle renderPort, Matrix? transform = null)
         {
             GraphicsDevice = graphicsDevice;
             SpriteBatch = spriteBatch;
@@ -30,6 +31,7 @@ namespace Forge.UI.Glass
             Textures = textures;
             RenderPrimitives = renderPrimitives;
             RenderPort = renderPort;
+            Transform = transform;
         }
 
         public Vector2 GetGlobalPosition(Vector2 pos)
@@ -40,7 +42,7 @@ namespace Forge.UI.Glass
         public UIRenderContext SubContext(Rectangle subPosition)
         {
             var newRenderPort = new Rectangle(RenderPort.X + subPosition.X, RenderPort.Y + subPosition.Y, subPosition.Width, subPosition.Height);
-            return new UIRenderContext(GraphicsDevice, SpriteBatch, GameTime, Fonts, Colours, Textures, RenderPrimitives, newRenderPort);
+            return new UIRenderContext(GraphicsDevice, SpriteBatch, GameTime, Fonts, Colours, Textures, RenderPrimitives, newRenderPort, Transform);
         }
     }
 }

@@ -33,7 +33,7 @@ namespace Forge.UI.Glass.Elements
                         ? context.Colours.Get(colourBackground.ColourResource) 
                         : colourBackground.Colour;
                     colour = colour ?? colourBackground.Colour ?? Color.Purple;
-                    spriteBatch.Begin();
+                    spriteBatch.Begin(transformMatrix: context.Transform);
                     spriteBatch.Draw(
                         context.RenderPrimitives.WhiteTexture,
                         screenPosition,
@@ -52,7 +52,7 @@ namespace Forge.UI.Glass.Elements
                         : imageBackground.Image;
                     if (texture != null)
                     {
-                        spriteBatch.Begin();
+                        spriteBatch.Begin(transformMatrix: context.Transform);
                         spriteBatch.Draw(
                             texture,
                             screenPosition,

@@ -7,10 +7,17 @@ namespace Forge.UI.Glass.Elements
 {
     public class Text : Primitive
     {
+        public enum Positioning : byte
+        {
+            Left,
+            Center,
+            Right
+        }
+
         public string Value { get; set; }
         public string Font { get; set; }
         public Color? Colour { get; set; }
-        public bool Center { get; set; }
+        public Positioning TextAlign { get; set; }
 
         public Text(params IElement[] children) : base(children)
         {
@@ -33,14 +40,19 @@ namespace Forge.UI.Glass.Elements
             }
             var width = font.MeasureString(Value).X;
 
-            context.SpriteBatch.Begin();
-            if (Center)
+            context.SpriteBatch.Begin(transformMatrix: context.Transform);
+
+            switch (TextAlign)
             {
-                context.SpriteBatch.DrawString(font, Value, screenPosition.Location.ToVector2() - new Vector2(width/2f, 0), Colour ?? Color.White);
-            }
-            else
-            {
-                context.SpriteBatch.DrawString(font, Value, screenPosition.Location.ToVector2(), Colour ?? Color.White);
+                case Positioning.Center:
+                    context.SpriteBatch.DrawString(font, Value, screenPosition.Location.ToVector2() - new Vector2(width / 2f, 0), Colour ?? Color.White);
+                    break;
+                case Positioning.Left:
+                    context.SpriteBatch.DrawString(font, Value, screenPosition.Location.ToVector2(), Colour ?? Color.White);
+                    break;
+                case Positioning.Right:
+                    context.SpriteBatch.DrawString(font, Value, screenPosition.Location.ToVector2() - new Vector2(width, 0), Colour ?? Color.White);
+                    break;
             }
             context.SpriteBatch.End();
         }
