@@ -17,10 +17,10 @@ namespace Forge.Core.Rendering.Cameras
         private static Matrix _rotationOffset = Matrix.CreateRotationY(MathHelper.ToRadians(90));
         private static Matrix _rotationOffsetInverse = Matrix.CreateRotationY(MathHelper.ToRadians(-90));
 
-        public Matrix TransformMatrix { get; set; }
+        //public Matrix TransformMatrix { get; set; }
 
         /* ICamera implementation */
-        private Matrix _world;
+        public Matrix World { get; private set; }
         public Matrix View { get; private set; }
         public Matrix InverseView { get; private set; }
         public Matrix InverseViewNoTranslate { get; private set; }
@@ -86,16 +86,16 @@ namespace Forge.Core.Rendering.Cameras
         {
             var basisTransform = Matrix.CreateFromQuaternion(Transform.Rotation);
             // Calculate the camera's world matrix.
-            _world = basisTransform * Matrix.CreateTranslation(Transform.Location);
+            World = basisTransform * Matrix.CreateTranslation(Transform.Location);
             // The view matrix is the inverse of the camera's world matrix.
-            View = Matrix.Invert(_world);
-            InverseView = _world;
+            View = Matrix.Invert(World);
+            InverseView = World;
 
             InverseViewNoTranslate = new Matrix(
-                _world.M11, _world.M12, _world.M13, 0,
-                _world.M21, _world.M22, _world.M23, 0,
-                _world.M31, _world.M32, _world.M33, 0,
-                _world.M41, _world.M42, _world.M43, _world.M44
+                World.M11, World.M12, World.M13, 0,
+                World.M21, World.M22, World.M23, 0,
+                World.M31, World.M32, World.M33, 0,
+                World.M41, World.M42, World.M43, World.M44
             );
 
 

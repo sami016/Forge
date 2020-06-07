@@ -11,7 +11,7 @@ namespace Forge.Core.Components
     public class Transform : Component
     {
         private bool _dirty = true;
-        
+
         private Vector3 _location = Vector3.Zero;
         /// <summary>
         /// The position of the object.
@@ -22,6 +22,21 @@ namespace Forge.Core.Components
             set
             {
                 _location = value;
+                _dirty = true;
+            }
+        }
+
+
+        private Vector3 _scale = Vector3.One;
+        /// <summary>
+        /// The position of the object.
+        /// </summary>
+        public Vector3 Scale
+        {
+            get => _scale;
+            set
+            {
+                _scale = value;
                 _dirty = true;
             }
         }
@@ -69,7 +84,10 @@ namespace Forge.Core.Components
         }
 
         private Matrix _worldTransform;
+        private Matrix? _parentTransformLast;
         private readonly Transform _parent;
+
+        public Transform Parent => _parent;
 
         /// <summary>
         /// The world transform of the object.
@@ -79,19 +97,30 @@ namespace Forge.Core.Components
             get
             {
                 // Update the transform in a lazy manner whenever state is dirty.
-                if (_dirty)
-                {
+                if (
+                    _dirty
+                    || !_parentTransformLast.HasValue
+                    || _parentTransformLast.Value != _parent.WorldTransform
+                )
+                { 
                     _worldTransform = Matrix.Identity;
+                    _worldTransform *= Matrix.CreateScale(Scale);
                     if (_rotationCenter.HasValue)
                     {
                         _worldTransform *= Matrix.CreateTranslation(-_rotationCenter.Value);
                         _worldTransform *= Matrix.CreateFromQuaternion(_rotation);
                         _worldTransform *= Matrix.CreateTranslation(_rotationCenter.Value);
-                    } else
+                    } 
+                    else
                     {
                         _worldTransform *= Matrix.CreateFromQuaternion(_rotation);
                     }
-                    _worldTransform *= Matrix.CreateTranslation(_location);
+                    _worldTransform *= Matrix.CreateTranslation(Location);
+                    if (_parent != null)
+                    {
+                        _parentTransformLast = _parent.WorldTransform;
+                        _worldTransform *= _parentTransformLast.Value;
+                    }
                     _dirty = false;
                 }
                 return _worldTransform;
@@ -108,7 +137,7 @@ namespace Forge.Core.Components
             _parent = parent;
         }
 
-        public Transform(Vector3 position)
+        public Transform(Vector3 position, Transform parent = null): this(parent)
         {
             Location = position;
         }
