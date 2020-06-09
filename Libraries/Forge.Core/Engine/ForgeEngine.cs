@@ -71,7 +71,7 @@ namespace Forge.Core.Engine
             Initialised?.Invoke();
         }
 
-        public void Draw(GameTime gameTime)
+        public void Draw(GameTime gameTime, bool prerender)
         {
             if (_graphics == null)
             {
@@ -79,21 +79,36 @@ namespace Forge.Core.Engine
             }
             var context = new RenderContext(gameTime, _spriteBatch, _graphics?.GraphicsDevice);
 
-            var renderModifiers = EntityManager.GetAll<IRenderModifier>()
-                .ToList();
-            renderModifiers.Sort((x, y) => (int)(x.ApplicationOrder - y.ApplicationOrder));
-            foreach (var renderModifier in renderModifiers)
+            if (prerender)
             {
-                renderModifier.Apply(context);
+                // First up draw anything that needs drawing to back buffers.
+                var prerenderables = EntityManager.GetAll<IPrerenderable>()
+                    .Where(x => x.AutoRender)
+                    .ToList();
+                prerenderables.Sort((x, y) => (int)(x.RenderOrder - y.RenderOrder));
+                foreach (var renderable in prerenderables)
+                {
+                    renderable.Prerender(context);
+                }
             }
-
-            var renderables = EntityManager.GetAll<IRenderable>()
-                .Where(x => x.AutoRender)
-                .ToList();
-            renderables.Sort((x, y) => (int)(x.RenderOrder - y.RenderOrder));
-            foreach (var renderable in renderables)
+            else
             {
-                renderable.Render(context);
+                var renderModifiers = EntityManager.GetAll<IRenderModifier>()
+                    .ToList();
+                renderModifiers.Sort((x, y) => (int)(x.ApplicationOrder - y.ApplicationOrder));
+                foreach (var renderModifier in renderModifiers)
+                {
+                    renderModifier.Apply(context);
+                }
+
+                var renderables = EntityManager.GetAll<IRenderable>()
+                    .Where(x => x.AutoRender)
+                    .ToList();
+                renderables.Sort((x, y) => (int)(x.RenderOrder - y.RenderOrder));
+                foreach (var renderable in renderables)
+                {
+                    renderable.Render(context);
+                }
             }
         }
 

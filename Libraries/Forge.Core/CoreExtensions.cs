@@ -24,6 +24,7 @@ namespace Forge.Core
             builder.IndexInterface<IPostTick>();
             builder.IndexInterface<IRenderable>();
             builder.IndexInterface<IRenderModifier>();
+            builder.IndexInterface<IPrerenderable>();
 
             builder.AddSingleton<ResourceManager<SpriteFont>>(() => new ResourceManager<SpriteFont>());
             builder.AddSingleton<ResourceManager<Color>>(() => new ResourceManager<Color>());

@@ -15,7 +15,7 @@ namespace Forge.UI.Glass.World
     /// <summary>
     /// A screen for rendering UI onto.
     /// </summary>
-    public class Screen : Component, IInit, ITick, IRenderable
+    public class Screen : Component, IInit, ITick, IPrerenderable
     {
         private RenderTarget2D _renderTarget;
         private readonly Texture2D _texture;
@@ -29,7 +29,7 @@ namespace Forge.UI.Glass.World
         public bool TickEnabled { get; } = true;
         public Color TextureColor { get; set; } = Color.White;
 
-        public bool AutoRender { get; set; } = false;
+        public bool AutoRender { get; set; } = true;
         private bool _manualRerender;
 
         [Inject] public GraphicsDevice GraphicsDevice { get; set; }
@@ -66,7 +66,7 @@ namespace Forge.UI.Glass.World
             _manualRerender = true;
         }
 
-        public void Render(RenderContext context)
+        public void Prerender(RenderContext context)
         {
             if (AutoRender
                 || _manualRerender)
@@ -79,7 +79,6 @@ namespace Forge.UI.Glass.World
                     context.SpriteBatch.Draw(_texture, new Rectangle(0, 0, _screenWidth, _screenHeight), TextureColor);
                     context.SpriteBatch.End();
                 }
-                //element.Position = GraphicsDevice.Viewport.Bounds;
                 _template.Render(
                     new UIRenderContext
                     (

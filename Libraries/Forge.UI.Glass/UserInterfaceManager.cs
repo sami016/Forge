@@ -14,7 +14,7 @@ using System.Text;
 namespace Forge.UI.Glass
 {
     public delegate void UIDispose();
-    public class UserInterfaceManager : Component, IRenderable, ITick
+    public class UserInterfaceManager : Component, IPrerenderable, IRenderable, ITick
     {
         private readonly IDictionary<ITemplate, int> _templates = new Dictionary<ITemplate, int>();
 
@@ -43,6 +43,30 @@ namespace Forge.UI.Glass
             {
                 _templates.Remove(template);
             };
+        }
+
+        public void Prerender(RenderContext context)
+        {
+            foreach (var element in _templates
+                .OrderBy(x => x.Value)
+                .Select(x => x.Key)
+                .ToArray()
+            )
+            {
+                element.Prerender(
+                    new UIRenderContext
+                    (
+                        GraphicsDevice,
+                        context.SpriteBatch,
+                        context.GameTime,
+                        Fonts,
+                        Colours,
+                        Textures,
+                        RenderPrimitives,
+                        element.Position
+                    )
+                );
+            }
         }
 
         public void Render(RenderContext context)

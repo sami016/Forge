@@ -145,5 +145,6 @@ namespace Forge.UI.Glass.Templates
         }
 
         public void Render(UIRenderContext context) => Current?.Render(context);
+        public void Prerender(UIRenderContext context) => Current?.Prerender(context);
     }
 }

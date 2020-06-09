@@ -15,6 +15,7 @@ namespace Forge.UI.Glass.Elements
         UIEvents Events { get; }
         Action<IElement> Init { get; set; }
         void Render(UIRenderContext context);
+        void Prerender(UIRenderContext context);
 
         /// <summary>
         /// Used to initialises elements.
