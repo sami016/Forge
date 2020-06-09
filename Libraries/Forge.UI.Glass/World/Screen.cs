@@ -27,6 +27,7 @@ namespace Forge.UI.Glass.World
         public Matrix? Transform { get; set; } = null;
         public uint RenderOrder { get; set; } = 150;
         public bool TickEnabled { get; } = true;
+        public Color TextureColor { get; set; } = Color.White;
 
         public bool AutoRender { get; set; } = false;
         private bool _manualRerender;
@@ -75,7 +76,7 @@ namespace Forge.UI.Glass.World
                 if (_texture != null)
                 {
                     context.SpriteBatch.Begin();
-                    context.SpriteBatch.Draw(_texture, new Rectangle(0, 0, _screenWidth, _screenHeight), Color.White);
+                    context.SpriteBatch.Draw(_texture, new Rectangle(0, 0, _screenWidth, _screenHeight), TextureColor);
                     context.SpriteBatch.End();
                 }
                 //element.Position = GraphicsDevice.Viewport.Bounds;
