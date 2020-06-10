@@ -19,7 +19,7 @@ namespace Forge.Core.Services
             _serviceContainer = serviceContainer;
         }
 
-        public void Add<T>(T service)
+        public T Add<T>(T service)
             where T : Service
         {
             var serviceEnt = _entityManager.Create();
@@ -27,6 +27,7 @@ namespace Forge.Core.Services
             serviceEnt.Create();
             _serviceContainer.AddService(typeof(T), service);
             _services.Add(service);
+            return service;
         }
 
         public void Remove<T>(T service)

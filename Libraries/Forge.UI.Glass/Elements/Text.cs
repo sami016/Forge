@@ -28,6 +28,12 @@ namespace Forge.UI.Glass.Elements
             Value = value;
         }
 
+        public Text(string value, string font, params IElement[] children) : base(children)
+        {
+            Value = value;
+            Font = font;
+        }
+
         public override void Render(UIRenderContext context)
         {
             var screenPosition = context.RenderPort;
