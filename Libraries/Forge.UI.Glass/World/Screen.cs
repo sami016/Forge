@@ -5,6 +5,7 @@ using Forge.Core.Rendering;
 using Forge.Core.Resources;
 using Forge.UI.Glass.Templates;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -35,7 +36,7 @@ namespace Forge.UI.Glass.World
         [Inject] public GraphicsDevice GraphicsDevice { get; set; }
         [Inject] public ResourceManager<SpriteFont> Fonts { get; set; }
         [Inject] public ResourceManager<Color> Colours { get; set; }
-        [Inject] public ResourceManager<Texture2D> Textures { get; set; }
+        [Inject] public ContentManager ContentManager { get; set; }
         [Inject] public RenderResources RenderPrimitives { get; set; }
         [Inject] IServiceProvider ServiceProvider { get; set; }
 
@@ -87,7 +88,7 @@ namespace Forge.UI.Glass.World
                         context.GameTime,
                         Fonts,
                         Colours,
-                        Textures,
+                        ContentManager,
                         RenderPrimitives,
                         _template.Position,
                         Transform

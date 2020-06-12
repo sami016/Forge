@@ -48,7 +48,7 @@ namespace Forge.UI.Glass.Elements
                     break;
                 case ImageBackgroundStyling imageBackground:
                     var texture = !string.IsNullOrEmpty(imageBackground.ImageResource)
-                        ? context.Textures.Get(imageBackground.ImageResource)
+                        ? context.ContentManager.Load<Texture2D>(imageBackground.ImageResource)
                         : imageBackground.Image;
                     if (texture != null)
                     {
