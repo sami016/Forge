@@ -37,9 +37,10 @@ namespace Forge.Core.Scenes
         {
             ClearScene();
             var sceneEnt = _entityManager.Create();
+            Loaded = scene;
             sceneEnt.Add(scene);
             sceneEnt.Spawn();
-            Loaded = scene;
+            scene.InitialiseScene();
         }
     }
 }

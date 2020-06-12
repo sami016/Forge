@@ -77,11 +77,11 @@ namespace Forge.Core.Engine
             // Useless indexing now, since it doesn't have components added until after this returns.
             _componentIndexer.Index(entity);
             entity.Id = Pools.Add(entity);
-            Console.WriteLine($"Spawned entity with id {entity.Id}");
-            foreach (var component in entity.Components)
-            {
-                Console.WriteLine($"\twith component: {component.GetType()}");
-            }
+            //Console.WriteLine($"Spawned entity with id {entity.Id}");
+            //foreach (var component in entity.Components)
+            //{
+            //    Console.WriteLine($"\twith component: {component.GetType()}");
+            //}
         }
 
         internal void Reindex(Entity entity)

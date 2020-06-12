@@ -83,7 +83,7 @@ namespace Forge.Core.Rendering.Cameras
             var worldSpaceUp = Vector3.Transform(Vector3.Up, inverseViewNoTranslate);
             var worldSpaceLeft = Vector3.Transform(Vector3.Left, inverseViewNoTranslate);
 
-            Console.WriteLine(worldSpaceUp);
+            //Console.WriteLine(worldSpaceUp);
             var pos = cameraLocation + screenPos.X * worldSpaceLeft * _width.Value + screenPos.Y * worldSpaceUp * _height.Value;
             //Console.WriteLine(pos);
 

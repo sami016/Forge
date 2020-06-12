@@ -9,7 +9,7 @@ using System.Text;
 
 namespace Forge.Core.Scenes
 {
-    public abstract class Scene : Component, IDisposable, IInit
+    public abstract class Scene : Component, IDisposable
     {
         // List of all singleton entities within the scene.
         private IDictionary<Type, Entity> _singletonEntities = new Dictionary<Type, Entity>();
@@ -17,7 +17,7 @@ namespace Forge.Core.Scenes
 
         protected Action Disposal;
 
-        public abstract void Initialise();
+        public abstract void InitialiseScene();
 
         public void AddDisposeAction(Action disposeAction)
         {

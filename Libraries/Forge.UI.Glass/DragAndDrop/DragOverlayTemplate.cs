@@ -72,7 +72,7 @@ namespace Forge.UI.Glass.DragAndDrop
                             {
                                 _currentPos = targetPos;
                             }
-                            Console.WriteLine(_currentPos.Value);
+                            //Console.WriteLine(_currentPos.Value);
                         }
                     }
                     break;
@@ -92,7 +92,7 @@ namespace Forge.UI.Glass.DragAndDrop
                             {
                                 _currentPos = targetPos;
                             }
-                            Console.WriteLine(_currentPos.Value);
+                            //Console.WriteLine(_currentPos.Value);
                         }
 
                     }
