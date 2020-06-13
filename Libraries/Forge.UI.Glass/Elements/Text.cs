@@ -18,6 +18,7 @@ namespace Forge.UI.Glass.Elements
         public string Font { get; set; }
         public Color? Colour { get; set; }
         public Positioning TextAlign { get; set; }
+        public bool VerticalCenter { get; set; }
 
         public Text(params IElement[] children) : base(children)
         {
@@ -44,22 +45,30 @@ namespace Forge.UI.Glass.Elements
             {
                 font = context.Fonts.Get("Default");
             }
-            var width = font.MeasureString(Value).X;
+            var size = font.MeasureString(Value);
 
             context.SpriteBatch.Begin(transformMatrix: context.Transform);
+
+            var pos = screenPosition.Location.ToVector2();
 
             switch (TextAlign)
             {
                 case Positioning.Center:
-                    context.SpriteBatch.DrawString(font, Value, screenPosition.Location.ToVector2() - new Vector2(width / 2f, 0), Colour ?? Color.White);
+                    pos -= new Vector2(size.X / 2f, 0);
                     break;
                 case Positioning.Left:
-                    context.SpriteBatch.DrawString(font, Value, screenPosition.Location.ToVector2(), Colour ?? Color.White);
                     break;
                 case Positioning.Right:
-                    context.SpriteBatch.DrawString(font, Value, screenPosition.Location.ToVector2() - new Vector2(width, 0), Colour ?? Color.White);
+                    pos -= new Vector2(size.X, 0);
                     break;
             }
+
+            if (VerticalCenter)
+            {
+                pos -= new Vector2(0, size.Y / 2);
+            }
+
+            context.SpriteBatch.DrawString(font, Value, pos, Colour ?? Color.White);
             context.SpriteBatch.End();
         }
     }
