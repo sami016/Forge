@@ -22,6 +22,8 @@ namespace Forge.UI.Glass
         [Inject] public GraphicsDevice GraphicsDevice { get; set; }
         private MouseState _previousState;
 
+        private IList<IElement> _hoverElements = new List<IElement>();
+
         public MouseCapability()
         {
 
@@ -54,6 +56,29 @@ namespace Forge.UI.Glass
                 }
             }
 
+            // Get all elements currently being hovered.
+            var hoveringNow = new List<IElement>();
+            foreach (var layer in UserInterfaceManager.TemplateLayers.ToArray())
+            {
+                HoverCheckRecurse(layer, new Rectangle(0, 0, GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height), position.ToVector2(), hoveringNow);
+            }
+            foreach (var el in hoveringNow.Except(_hoverElements))
+            {
+                if (el.Events.Handles<MouseHoverEvent>())
+                {
+                    el.Events.Handle(new MouseHoverEvent(position.ToVector2()));
+                }
+            }
+            foreach (var el in _hoverElements.Except(hoveringNow))
+            {
+                if (el.Events.Handles<MouseUnhoverEvent>())
+                {
+                    el.Events.Handle(new MouseUnhoverEvent(position.ToVector2()));
+                }
+            }
+
+            _hoverElements = hoveringNow;
+
             _previousState = state;
         }
 
@@ -76,10 +101,30 @@ namespace Forge.UI.Glass
                 // Handle any listener events.
                 var @event = eventFunc(mousePosition);
                 if (element.Events.Handles<T>())
-                {   
+                {
                     element.Events.Handle(@event);
                     return !@event.Propagate;
                 }
+            }
+            return false;
+        }
+
+        private bool HoverCheckRecurse(IElement element, Rectangle bounds, Vector2 mousePosition, IList<IElement> elements)
+        {
+            var globalPosition = new Rectangle(element.Position.Location + bounds.Location, element.Position.Size);
+            // First check, is the click within the element?
+            if (HitCheck(globalPosition, mousePosition))
+            {
+                // Children first.
+                foreach (var child in element.Children)
+                {
+                    if (HoverCheckRecurse(child, globalPosition, mousePosition, elements))
+                    {
+                        return true;
+                    }
+                }
+
+                elements.Add(element);
             }
             return false;
         }

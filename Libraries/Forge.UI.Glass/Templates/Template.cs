@@ -56,12 +56,14 @@ namespace Forge.UI.Glass.Templates
             }
         }
 
-        public IList<IElement> Children => Current.Children;
+        public IList<IElement> Children => Current?.Children ?? new IElement[0];
 
-        public UIEvents Events => Current.Events;
+        public UIEvents Events { get; set; } = new UIEvents();
 
         public float Vw => GraphicsDevice.Viewport.Width / 100f;
         public float Vh => GraphicsDevice.Viewport.Height / 100f;
+        public float Pw => Position.Width / 100f;
+        public float Ph => Position.Height / 100f;
 
         protected TickContext TickContext { get; private set; }
 
@@ -99,6 +101,10 @@ namespace Forge.UI.Glass.Templates
             try
             {
                 Current = Evaluate();
+                if (Current != null)
+                {
+                    Current.Events = Events;
+                }
                 Current?.Initialise(_uiInitialiseContext);
                 if (_position.HasValue)
                 {

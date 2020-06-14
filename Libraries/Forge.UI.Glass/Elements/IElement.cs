@@ -12,7 +12,7 @@ namespace Forge.UI.Glass.Elements
     {
         IList<IElement> Children { get; }
         Rectangle Position { get; set; }
-        UIEvents Events { get; }
+        UIEvents Events { get; set; }
         Action<IElement> Init { get; set; }
         void Render(UIRenderContext context);
         void Prerender(UIRenderContext context);

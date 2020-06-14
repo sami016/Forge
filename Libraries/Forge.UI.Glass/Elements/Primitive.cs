@@ -17,7 +17,7 @@ namespace Forge.UI.Glass.Elements
     {
         public IList<IElement> Children { get; }
         public Rectangle Position { get; set; }
-        public UIEvents Events { get; } = new UIEvents();
+        public UIEvents Events { get; set; } = new UIEvents();
         public Action<IElement> Init { get; set; }
 
         public Primitive(IEnumerable<IElement> children)

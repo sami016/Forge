@@ -32,5 +32,10 @@ namespace Forge.UI.Glass.Interaction
             var action = _handlers[typeof(TEvent)] as Action<TEvent>;
             action?.Invoke(eventObject);
         }
+
+        public void Handles<T>(Func<object, object> p)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
