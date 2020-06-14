@@ -36,6 +36,10 @@ namespace Forge.UI.Glass.Elements
         public abstract void Render(UIRenderContext context);
         public virtual void Prerender(UIRenderContext context)
         {
+            foreach (var child in Children)
+            {
+                child.Prerender(context.SubContext(child.Position));
+            }
         }
         
         public virtual void Tick(TickContext context)

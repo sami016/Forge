@@ -29,9 +29,10 @@ namespace Forge.UI.Glass.Elements
         {
         }
 
-        public override void Render(UIRenderContext context)
+        public override void Prerender(UIRenderContext context)
         {
             var screenPosition = context.RenderPort;
+
             if (View == null)
             {
                 View = Matrix.CreateLookAt(new Vector3(1f, 1f, 1f), Vector3.Zero, Vector3.Up);
@@ -39,7 +40,7 @@ namespace Forge.UI.Glass.Elements
             if (Projection == null)
             {
                 Projection = Matrix.CreateOrthographicOffCenter(-1, 1, -1, 1, 0.001f, 10000f);
-                    //Matrix.CreatePerspective(context.GraphicsDevice.Viewport.Width, context.GraphicsDevice.Viewport.Height, 0.001f, 10000f);
+                //Matrix.CreatePerspective(context.GraphicsDevice.Viewport.Width, context.GraphicsDevice.Viewport.Height, 0.001f, 10000f);
             }
             if (_renderTarget == null
                 || _renderTarget.Height != screenPosition.Height
@@ -63,6 +64,18 @@ namespace Forge.UI.Glass.Elements
                 context.GraphicsDevice.SetRenderTarget(null);
                 _rendered = true;
             }
+        }
+
+        public override void Render(UIRenderContext context)
+        {
+            var screenPosition = context.RenderPort;
+            if(context.RenderPort.Width == 0
+                || context.RenderPort.Height == 0
+                || _renderTarget == null)
+            {
+                return;
+            }
+
             context.SpriteBatch.Begin();
             context.SpriteBatch.Draw(_renderTarget, screenPosition, Color.White);
             context.SpriteBatch.End();
