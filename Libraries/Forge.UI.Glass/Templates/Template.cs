@@ -75,7 +75,7 @@ namespace Forge.UI.Glass.Templates
         /// Initialises the template.
         /// </summary>
         /// <param name="graphicsDevice"></param>
-        public void Initialise(UIInitialiseContext uiInitialiseContext)
+        public virtual void Initialise(UIInitialiseContext uiInitialiseContext)
         {
             _uiInitialiseContext = uiInitialiseContext;
             DoInitialise(_uiInitialiseContext);

@@ -57,7 +57,7 @@ namespace Forge.UI.Glass.Elements
                             texture,
                             screenPosition,
                             null,
-                            Color.White,
+                            imageBackground.Colour,
                             0,
                             Vector2.Zero,
                             SpriteEffects.None,

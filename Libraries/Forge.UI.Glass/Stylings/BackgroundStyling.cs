@@ -30,6 +30,7 @@ namespace Forge.UI.Glass.Stylings
     {
         public string ImageResource { get; set; }
         public Texture2D Image { get; set; }
+        public Color Colour { get; set; } = Color.White;
 
         public bool BorderStretchMode { get; set; }
         public float BorderStretchTop { get; set; }
