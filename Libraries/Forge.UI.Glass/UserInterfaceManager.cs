@@ -8,6 +8,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -17,7 +18,7 @@ namespace Forge.UI.Glass
     public delegate void UIDispose();
     public class UserInterfaceManager : Component, IPrerenderable, IRenderable, ITick
     {
-        private readonly IDictionary<ITemplate, int> _templates = new Dictionary<ITemplate, int>();
+        private readonly IDictionary<ITemplate, int> _templates = new ConcurrentDictionary<ITemplate, int>();
 
         public uint RenderOrder { get; set; } = 150;
         public bool AutoRender { get; } = true;

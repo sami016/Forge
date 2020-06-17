@@ -33,6 +33,28 @@ namespace Forge.UI.Glass.Rendering
 
         public bool AutoRender { get; } = true;
 
+        private bool _visible;
+        public bool Visible {
+            get => _visible;
+            set
+            {
+                if (_visible == value)
+                {
+                    return;
+                }
+                _visible = value;
+
+                if (value)
+                {
+                    _uiDisposal = UserInterfaceManager.Create(_overlayTemplate);
+                } else
+                {
+                    _uiDisposal?.Invoke();
+                    _uiDisposal = null;
+                }
+            }
+        }
+
         public OverlayRenderer(ITemplate template)
         {
             _template = template;
@@ -40,6 +62,11 @@ namespace Forge.UI.Glass.Rendering
 
         public void Render(RenderContext context)
         {
+            if (!Visible)
+            {
+                return;
+            }
+
             var iniPosition = _template.Current.Position;
             var pos = Transform.Location;
             var screenPos3D = context.GraphicsDevice.Viewport.Project(pos, context.Projection.Value, context.View.Value, Matrix.Identity);
@@ -56,7 +83,7 @@ namespace Forge.UI.Glass.Rendering
         public void Initialise()
         {
             _overlayTemplate = new OverlayTemplate(_template);
-            _uiDisposal = UserInterfaceManager.Create(_overlayTemplate);
+            Visible = true;
         }
 
         public override void Dispose()
@@ -64,6 +91,7 @@ namespace Forge.UI.Glass.Rendering
             base.Dispose();
 
             _uiDisposal?.Invoke();
+            _uiDisposal = null;
         }
     }
 
