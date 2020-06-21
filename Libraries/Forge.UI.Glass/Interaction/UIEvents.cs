@@ -9,17 +9,25 @@ namespace Forge.UI.Glass.Interaction
     /// </summary>
     public class UIEvents
     {
-        private readonly Dictionary<Type, object> _handlers = new Dictionary<Type, object>();
+        private readonly Dictionary<Type, IList<object>> _handlers = new Dictionary<Type, IList<object>>();
 
         public UIEvents Subscribe<TEvent>(Action<TEvent> handler)
         {
-            _handlers[typeof(TEvent)] = handler;
+            if (!_handlers.ContainsKey(typeof(TEvent)))
+            {
+                _handlers[typeof(TEvent)] = new List<object>();
+            }
+            _handlers[typeof(TEvent)].Add(handler);
             return this;
         }
 
-        public void Unsubscribe<TEvent>()
+        public void Unsubscribe<TEvent>(Action<TEvent> handler)
         {
-            _handlers.Remove(typeof(TEvent));
+            if (!_handlers.ContainsKey(typeof(TEvent)))
+            {
+                return;
+            }
+            _handlers[typeof(TEvent)].Remove(handler);
         }
 
         public bool Handles<TEvent>()
@@ -29,13 +37,14 @@ namespace Forge.UI.Glass.Interaction
 
         public void Handle<TEvent>(TEvent eventObject)
         {
-            var action = _handlers[typeof(TEvent)] as Action<TEvent>;
-            action?.Invoke(eventObject);
-        }
-
-        public void Handles<T>(Func<object, object> p)
-        {
-            throw new NotImplementedException();
+            if (_handlers.ContainsKey(typeof(TEvent)))
+            {
+                foreach (var val in _handlers[typeof(TEvent)])
+                {
+                    var action = val as Action<TEvent>;
+                    action?.Invoke(eventObject);
+                }
+            }
         }
     }
 }

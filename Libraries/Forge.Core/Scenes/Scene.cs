@@ -46,6 +46,10 @@ namespace Forge.Core.Scenes
         /// <returns></returns>
         public Entity Create(bool inScene = true)
         {
+            if (!inScene)
+            {
+                return Entity.EntityManager.Create();
+            }
             return Entity.Create();
         }
 

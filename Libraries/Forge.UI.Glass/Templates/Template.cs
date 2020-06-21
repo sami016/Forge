@@ -21,6 +21,7 @@ namespace Forge.UI.Glass.Templates
     {
         public IElement Current { get; set; }
 
+        private bool _initialised;
         private UIInitialiseContext _uiInitialiseContext;
 
         public GraphicsDevice GraphicsDevice { get; private set; }
@@ -77,6 +78,7 @@ namespace Forge.UI.Glass.Templates
         /// <param name="graphicsDevice"></param>
         public virtual void Initialise(UIInitialiseContext uiInitialiseContext)
         {
+            _initialised = true;
             _uiInitialiseContext = uiInitialiseContext;
             DoInitialise(_uiInitialiseContext);
             GraphicsDevice = uiInitialiseContext.GraphicsDevice;
@@ -98,9 +100,20 @@ namespace Forge.UI.Glass.Templates
 
         public void Reevaluate()
         {
+            if (!_initialised)
+            {
+                return;
+            }
             try
             {
-                Current = Evaluate();
+                try
+                {
+                    Current = Evaluate();
+                } 
+                catch (Exception ex)
+                {
+                    Console.Error.WriteLine($"Error evaluating ui tmeplate: {ex.Message}\n{ex.StackTrace}");
+                }
                 if (Current != null)
                 {
                     Current.Events = Events;

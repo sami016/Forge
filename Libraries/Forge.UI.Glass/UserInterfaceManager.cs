@@ -50,6 +50,7 @@ namespace Forge.UI.Glass
         public void Prerender(RenderContext context)
         {
             foreach (var element in _templates
+                .ToArray()
                 .OrderBy(x => x.Value)
                 .Select(x => x.Key)
                 .ToArray()
