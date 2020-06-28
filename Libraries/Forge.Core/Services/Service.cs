@@ -64,6 +64,8 @@ namespace Forge.Core.Services
         {
             foreach (var type in _singletonEntities.Keys)
             {
+                var entity = _singletonEntities[type];
+                entity?.Delete();
                 ServiceContainer.RemoveService(type);
             }
         }
