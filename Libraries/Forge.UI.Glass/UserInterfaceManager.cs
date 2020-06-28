@@ -76,6 +76,7 @@ namespace Forge.UI.Glass
         {
             //TODO use engine renderable interface.
             foreach (var element in _templates
+                .ToArray()
                 .OrderBy(x => x.Value)
                 .Select(x => x.Key)
                 .ToArray()
